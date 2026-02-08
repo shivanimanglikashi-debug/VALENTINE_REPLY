@@ -32,18 +32,19 @@
             z-index: 10;
         }
 
-        /* --- HIGH-DETAIL COMPLETE WINGS --- */
+        /* --- WINGS: WIDER VIEWBOX TO PREVENT CUTTING OFF --- */
         .wings-svg {
             position: absolute;
-            width: 900px;
+            width: 1000px; /* Wider to accommodate full feather spread */
+            height: 600px;
             z-index: 1;
             opacity: 0;
-            transform: scale(0.3) translateY(120px);
+            transform: scale(0.3) translateY(150px);
             transition: all 1.6s cubic-bezier(0.19, 1, 0.22, 1);
-            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) drop-shadow(0 8px 15px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) drop-shadow(0 10px 20px rgba(0,0,0,0.2));
         }
 
-        /* --- ENVELOPE (OPEN POCKET) --- */
+        /* --- ENVELOPE --- */
         .envelope {
             position: relative;
             width: 320px;
@@ -58,48 +59,51 @@
             content: '';
             position: absolute;
             top: 0; left: 0;
-            width: 100%; height: 70%;
+            width: 100%; height: 75%;
             background: #e29fb0;
             clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
         }
 
-        /* --- ENLARGED POP-UP CARD --- */
+        /* --- STABLE CARD: NO DISTORTION --- */
         .card {
             position: absolute;
-            width: 320px;
-            height: 290px; /* Increased Height for full message */
+            width: 330px;
+            height: 300px;
             background: #fff;
             border-radius: 12px;
             padding: 12px;
             box-sizing: border-box;
             z-index: 5;
             opacity: 0;
+            display: flex; /* Ensures inner content doesn't distort */
             transform: translateY(0);
             transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         .card-inner {
-            width: 100%; height: 100%;
+            flex: 1;
             border: 3px solid var(--card-border);
             border-radius: 8px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 22px;
+            padding: 20px;
             text-align: center;
             background: #fff;
+            box-sizing: border-box; /* Fixes outline distortion */
         }
 
-        /* --- ANIMATION STATES --- */
+        /* --- OPEN STATE --- */
         .container.open .wings-svg {
             opacity: 1;
-            transform: scale(1.1) translateY(-50px);
+            transform: scale(1) translateY(-60px);
         }
 
         .container.open .card {
             opacity: 1;
-            transform: translateY(-180px);
+            transform: translateY(-200px);
             z-index: 100;
         }
 
@@ -108,6 +112,7 @@
             color: #333;
             line-height: 1.4;
             font-weight: bold;
+            min-height: 120px; /* Prevents card jumping during type */
         }
 
         .heart-particle {
@@ -122,21 +127,37 @@
 <body>
 
     <div class="container" onclick="openSurprise()">
-        <svg class="wings-svg" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
-            <g stroke="black" stroke-width="1.2" fill="white" stroke-linejoin="round">
-                <g transform="translate(400, 300)">
-                    <path d="M0,0 C-50,-100 -150,-200 -300,-250 C-320,-260 -350,-240 -340,-210 C-345,-220 -380,-190 -370,-160 C-375,-170 -400,-130 -380,-100 C-390,-110 -400,-60 -360,-30 C-370,-40 -370,10 -330,40 C-340,30 -320,80 -270,100 C-280,90 -240,130 -180,140 C-100,100 -50,50 0,0 Z" />
-                    <path d="M-50,-30 L-300,-200" fill="none" stroke-opacity="0.3" />
-                    <path d="M-60,0 L-330,-100" fill="none" stroke-opacity="0.3" />
-                    <path d="M-60,30 L-320,10" fill="none" stroke-opacity="0.3" />
-                    <path d="M-40,60 L-250,80" fill="none" stroke-opacity="0.3" />
-                </g>
-                <g transform="translate(400, 300) scale(-1, 1)">
-                    <path d="M0,0 C-50,-100 -150,-200 -300,-250 C-320,-260 -350,-240 -340,-210 C-345,-220 -380,-190 -370,-160 C-375,-170 -400,-130 -380,-100 C-390,-110 -400,-60 -360,-30 C-370,-40 -370,10 -330,40 C-340,30 -320,80 -270,100 C-280,90 -240,130 -180,140 C-100,100 -50,50 0,0 Z" />
-                    <path d="M-50,-30 L-300,-200" fill="none" stroke-opacity="0.3" />
-                    <path d="M-60,0 L-330,-100" fill="none" stroke-opacity="0.3" />
-                    <path d="M-60,30 L-320,10" fill="none" stroke-opacity="0.3" />
-                    <path d="M-40,60 L-250,80" fill="none" stroke-opacity="0.3" />
+        <svg class="wings-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="black" stroke-width="1.5" fill="white" stroke-linejoin="round">
+                <path d="M500,400 
+                         C480,350 420,250 300,180 
+                         C250,150 150,130 100,180 
+                         C80,210 70,250 100,290 
+                         C60,280 40,310 50,350 
+                         C60,390 90,410 130,410 
+                         C80,420 70,470 120,510 
+                         C160,540 220,530 280,490 
+                         C240,520 250,570 320,580 
+                         C400,590 480,500 500,400 Z" />
+                
+                <path d="M500,400 
+                         C520,350 580,250 700,180 
+                         C750,150 850,130 900,180 
+                         C920,210 930,250 900,290 
+                         C940,280 960,310 950,350 
+                         C940,390 910,410 870,410 
+                         C920,420 930,470 880,510 
+                         C840,540 780,530 720,490 
+                         C760,520 750,570 680,580 
+                         C600,590 520,500 500,400 Z" />
+                
+                <g stroke-opacity="0.3" fill="none">
+                    <path d="M450,380 Q350,300 150,230" />
+                    <path d="M460,420 Q350,420 150,400" />
+                    <path d="M470,450 Q400,500 300,530" />
+                    <path d="M550,380 Q650,300 850,230" />
+                    <path d="M540,420 Q650,420 850,400" />
+                    <path d="M530,450 Q600,500 700,530" />
                 </g>
             </g>
         </svg>
@@ -145,9 +166,9 @@
         
         <div class="card">
             <div class="card-inner">
-                <h2 style="margin:0 0 12px 0; font-size: 2.1rem; color: #333;">For You</h2>
+                <h2 style="margin:0 0 10px 0; font-size: 2.2rem; color: #333;">For You</h2>
                 <div id="typewriter"></div>
-                <div style="margin-top:15px; font-size: 26px;">❤️</div>
+                <div style="margin-top:15px; font-size: 28px;">❤️</div>
             </div>
         </div>
     </div>
