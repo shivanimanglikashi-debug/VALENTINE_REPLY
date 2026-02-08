@@ -3,92 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Letter For You</title>
+    <title>A Letter For You</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #ffeef2;
+            --pink: #ff4d6d;
+            --dark-pink: #d81b60;
+        }
         body { 
-            background-color: #ffeef2; /* Soft love-themed pink */
+            background-color: var(--bg); 
             background-image: radial-gradient(#ffc1cc 1px, transparent 1px);
-            background-size: 20px 20px; /* Subtle heart-dot pattern */
-            color: #d81b60; 
-            font-family: 'Dancing Script', cursive; 
+            background-size: 20px 20px; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
             margin: 0;
             overflow: hidden;
-            position: relative;
+            font-family: 'Dancing Script', cursive;
         }
-        .container {
-            border: none;
-            padding: 50px;
-            background: rgba(255, 255, 255, 0.9); /* Glassy white paper look */
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(216, 27, 96, 0.2);
-            max-width: 80%;
-            z-index: 10;
+
+        /* Envelope Styling */
+        .envelope-wrapper { cursor: pointer; transition: 0.5s; }
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background: #f06292;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            z-index: 2;
+            border-top: 100px solid #f48fb1;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            transform-origin: top;
+            transition: transform 0.5s 0.5s;
+        }
+        .envelope::after {
+            content: '';
+            position: absolute;
+            z-index: 3;
+            border-top: 100px solid transparent;
+            border-right: 150px solid #f06292;
+            border-bottom: 100px solid #f06292;
+            border-left: 150px solid #f06292;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        /* Letter Styling */
+        .letter {
+            position: absolute;
+            bottom: 0;
+            left: 10px;
+            width: 280px;
+            height: 180px;
+            background: white;
+            z-index: 1;
+            transition: 0.5s;
+            padding: 20px;
+            box-sizing: border-box;
             text-align: center;
-            position: relative;
+            border-radius: 5px;
+            color: var(--dark-pink);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        .container::before {
-            content: "♥";
-            position: absolute;
-            top: 10px;
-            left: 20px;
-            font-size: 20px;
-            opacity: 0.5;
+
+        /* Animation when Opened */
+        .envelope-wrapper.open .envelope::before { transform: rotateX(180deg); z-index: 0; }
+        .envelope-wrapper.open .letter { 
+            transform: translateY(-150px); 
+            height: 350px; 
+            width: 320px; 
+            left: -10px;
+            z-index: 5;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        .my-message {
-            font-size: 2.2em;
-            line-height: 1.4;
-            margin-bottom: 20px;
-            white-space: pre-wrap;
-        }
-        .heart-main { color: #ff4d6d; font-size: 60px; animation: pulse 1s infinite; }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1); }
-        }
+
+        #typewriter { font-size: 1.8em; line-height: 1.2; white-space: pre-wrap; }
+        .heart-main { color: var(--pink); font-size: 40px; animation: pulse 1s infinite; display: none; margin-top: 10px; }
+        @keyframes pulse { 50% { transform: scale(1.2); } }
+
         .falling-heart {
-            position: absolute;
-            top: -10%;
-            color: #ff8fa3;
-            font-size: 25px;
-            user-select: none;
-            animation: fall linear forwards;
-            pointer-events: none;
+            position: absolute; top: -10%; color: #ff8fa3; font-size: 20px;
+            animation: fall linear forwards; pointer-events: none;
         }
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+        
+        .instruction {
+            position: absolute; bottom: 20%; color: var(--dark-pink);
+            font-size: 1.2em; animation: pulse 1.5s infinite;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="my-message">
-YES! 
-I would love to be your Sahelii Moti. 
-You are the best! ❤️
+
+    <div class="instruction" id="clickText">Click the envelope to open...</div>
+
+    <div class="envelope-wrapper" onclick="openLetter()">
+        <div class="envelope">
+            <div class="letter">
+                <div id="typewriter"></div>
+                <div class="heart-main" id="mainHeart">❤️</div>
+            </div>
         </div>
-        <div class="heart-main">❤️</div>
     </div>
 
+    <audio id="bgMusic" loop>
+        <source src="https://www.mboxdrive.com/Perfect%20Instrumental.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
+        const message = "YES! \nI would love to be your Sahelii Moti. \nYou are the best! ❤️";
+        let i = 0;
+        let isOpened = false;
+
+        function openLetter() {
+            if (isOpened) return;
+            isOpened = true;
+            
+            document.querySelector('.envelope-wrapper').classList.add('open');
+            document.getElementById('clickText').style.display = 'none';
+            
+            // Play Music
+            const music = document.getElementById('bgMusic');
+            music.play().catch(e => console.log("Audio play blocked until interaction"));
+
+            setTimeout(typeWriter, 1200);
+            setInterval(createHeart, 400);
+        }
+
+        function typeWriter() {
+            if (i < message.length) {
+                document.getElementById("typewriter").innerHTML += message.charAt(i);
+                i++;
+                setTimeout(typeWriter, 800); // Slower, more romantic typing
+            } else {
+                document.getElementById("mainHeart").style.display = "block";
+            }
+        }
+
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('falling-heart');
-            // Randomly pick between different heart colors/shapes
             const types = ['❤️', '💖', '💕', '🌸'];
             heart.innerHTML = types[Math.floor(Math.random() * types.length)];
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.animationDuration = Math.random() * 3 + 3 + 's';
-            heart.style.opacity = Math.random() * 0.7 + 0.3;
             document.body.appendChild(heart);
             setTimeout(() => { heart.remove(); }, 6000);
         }
-        setInterval(createHeart, 400);
     </script>
 </body>
 </html>
