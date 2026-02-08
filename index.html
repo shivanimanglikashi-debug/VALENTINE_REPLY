@@ -36,7 +36,7 @@
             font-family: 'Dancing Script', cursive;
             color: white;
             font-size: 3.5rem;
-            margin-bottom: 40px;
+            margin: 0 0 40px 0;
             text-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
@@ -46,49 +46,69 @@
             z-index: 10;
         }
 
-        /* --- WINGS --- */
-        .wings {
+        /* --- CSS WINGS --- */
+        .wings-wrapper {
             position: absolute;
-            width: 700px;
-            top: 50px;
-            left: 50%;
-            transform: translateX(-50%);
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            align-items: center;
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.8s ease;
         }
 
-        .container.open .wings {
+        .container.open .wings-wrapper {
             opacity: 1;
         }
 
         .wing {
-            width: 250px;
-            height: 150px;
-            background: url('https://img.icons8.com/ios-filled/250/ffffff/angel-wings.png') no-repeat center;
-            background-size: contain;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+            position: absolute;
+            width: 180px;
+            height: 120px;
+            background: white;
+            border-radius: 10% 100% 10% 100%;
+            box-shadow: -5px 5px 15px rgba(0,0,0,0.1);
+            top: -50px;
+        }
+
+        /* Decorative feathers using pseudo-elements */
+        .wing::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 10% 100% 10% 100%;
+            top: 20px;
+            left: -10px;
+            box-shadow: -5px 5px 10px rgba(0,0,0,0.05);
         }
 
         .wing.left {
-            transform: scaleX(-1);
+            right: 80%;
+            transform-origin: right center;
             animation: flapLeft 2s ease-in-out infinite;
         }
 
         .wing.right {
+            left: 80%;
+            transform: scaleX(-1);
+            transform-origin: left center;
             animation: flapRight 2s ease-in-out infinite;
         }
 
         @keyframes flapLeft {
-            0%, 100% { transform: scaleX(-1) rotate(0deg); }
-            50% { transform: scaleX(-1) rotate(-10deg) translateY(-10px); }
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-15deg) translateY(-15px); }
         }
 
         @keyframes flapRight {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(-10deg) translateY(-10px); }
+            0%, 100% { transform: scaleX(-1) rotate(0deg); }
+            50% { transform: scaleX(-1) rotate(-15deg) translateY(-15px); }
         }
 
         /* --- ENVELOPE --- */
@@ -124,7 +144,6 @@
             border-radius: 15px;
             padding: 25px;
             box-sizing: border-box;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
             z-index: 15;
             opacity: 0;
             transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.1), opacity 0.5s;
@@ -144,30 +163,30 @@
         .card-header {
             font-family: 'Dancing Script', cursive;
             font-size: 2rem;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             color: var(--text-dark);
         }
 
         #typewriter {
             font-size: 0.95rem;
             color: #444;
-            line-height: 1.6;
+            line-height: 1.5;
             font-weight: 600;
         }
 
         .heart-icon {
             color: #d35d47;
             font-size: 20px;
-            margin-top: 15px;
+            margin-top: 10px;
         }
 
-        /* --- UI ELEMENTS --- */
+        /* --- UI --- */
         .hint {
             margin-top: 30px;
             color: white;
             font-size: 1.5rem;
-            font-family: 'Poppins', sans-serif;
             opacity: 0.9;
+            transition: opacity 0.3s;
         }
 
         .replay-btn {
@@ -184,72 +203,10 @@
             transition: 0.5s;
         }
 
-        /* Mobile */
         @media (max-width: 500px) {
-            .wings { width: 100%; top: 40px; }
-            .wing { width: 150px; height: 100px; }
             .envelope { width: 280px; height: 180px; }
             .card { width: 250px; height: 260px; left: 15px; }
+            .wing { width: 120px; height: 80px; }
             .container.open .card { transform: translateY(-200px); }
         }
     </style>
-</head>
-<body>
-
-    <div class="wrapper">
-        <h1 class="title">For You</h1>
-
-        <div class="container" id="mainContainer" onclick="openSurprise()">
-            <div class="wings">
-                <div class="wing left"></div>
-                <div class="wing right"></div>
-            </div>
-            
-            <div class="envelope">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-header">For You</div>
-                        <div id="typewriter"></div>
-                        <div class="heart-icon">❤️</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="hint" id="hintText">Click to open</div>
-        <button class="replay-btn" id="replayBtn" onclick="resetPage()">Open Again?</button>
-    </div>
-
-    <script>
-        const message = "Yes! I'll be your valentine. Believe me you're my world as of now. I cannot imagine my life without you. You're still my favourite morning face with those sleepy eyes.";
-        let i = 0;
-        let isOpened = false;
-
-        function openSurprise() {
-            if (isOpened) return;
-            isOpened = true;
-
-            document.getElementById('mainContainer').classList.add('open');
-            document.getElementById('hintText').style.display = 'none';
-            
-            setTimeout(typeWriter, 1000);
-        }
-
-        function typeWriter() {
-            if (i < message.length) {
-                document.getElementById("typewriter").innerHTML += message.charAt(i);
-                i++;
-                setTimeout(typeWriter, 40);
-            } else {
-                const btn = document.getElementById('replayBtn');
-                btn.style.visibility = 'visible';
-                btn.style.opacity = '1';
-            }
-        }
-
-        function resetPage() {
-            location.reload(); // Simple way to reset all animations
-        }
-    </script>
-</body>
-</html>
