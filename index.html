@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Surprise!</title>
+    <title>For You</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pink-bg: #ffeef2;
-            --envelope-color: #f06292;
-            --flap-color: #f48fb1;
+            /* Animated sky background */
+            --bg-top: #d35d47;
+            --bg-bottom: #f4c2b5;
+            --env-pink: #d9859a;
+            --env-flap: #e29fb0;
+            --card-border: #d4a5b1;
+            --paper-texture: radial-gradient(circle, #ffffff 0%, #f9f4f0 100%);
         }
 
         body {
-            background-color: var(--pink-bg);
-            background-image: radial-gradient(#ffc1cc 2px, transparent 2px);
-            background-size: 30px 30px;
+            background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            background-size: 100% 200%;
+            animation: skyDrift 10s ease-in-out infinite alternate;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -25,168 +29,209 @@
             font-family: 'Dancing Script', cursive;
         }
 
-        .envelope-wrapper {
+        @keyframes skyDrift {
+            from { background-position: 0% 0%; }
+            to { background-position: 0% 100%; }
+        }
+
+        /* Subtle floating clouds in background */
+        body::before {
+            content: "☁";
+            position: absolute;
+            font-size: 100px;
+            color: rgba(255,255,255,0.2);
+            top: 20%; left: -10%;
+            animation: cloudMove 25s linear infinite;
+        }
+
+        @keyframes cloudMove {
+            to { transform: translateX(120vw); }
+        }
+
+        .container {
             position: relative;
             cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             z-index: 10;
         }
 
-        /* --- REALISTIC FEATHERED WINGS --- */
-        .wing {
+        /* --- WINGS ATTACHED TO SIDES --- */
+        .wings-svg {
             position: absolute;
-            width: 170px;
-            height: 100px;
-            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-            top: 10px;
+            width: 950px;
+            height: 500px;
             z-index: 5;
             opacity: 0;
-            transition: all 0.9s ease-in-out;
-            border-radius: 0% 100% 40% 60% / 0% 100% 20% 80%;
-            box-shadow: 
-                -5px 10px 20px rgba(0,0,0,0.1),
-                inset 10px -10px 20px rgba(255,255,255,1);
-        }
-        
-        .wing-left { 
-            left: -140px; 
-            transform: rotate(-10deg) skewY(-5deg);
-        }
-        
-        .wing-right { 
-            right: -140px; 
-            transform: scaleX(-1) rotate(-10deg) skewY(-5deg); 
+            transform: scale(0.2);
+            transition: all 1.4s cubic-bezier(0.19, 1, 0.22, 1);
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+            pointer-events: none;
         }
 
-        /* Gentle Flap Animation */
-        @keyframes flap {
-            0%, 100% { transform: rotate(-10deg) skewY(-5deg); }
-            50% { transform: rotate(-20deg) translateY(-10px) skewY(-8deg); }
-        }
-        @keyframes flap-right {
-            0%, 100% { transform: scaleX(-1) rotate(-10deg) skewY(-5deg); }
-            50% { transform: scaleX(-1) rotate(-20deg) translateY(-10px) skewY(-8deg); }
+        .container.open .wings-svg {
+            opacity: 1;
+            transform: scale(1) translateY(-40px);
+            animation: envelopeHover 4s ease-in-out infinite 1.4s;
         }
 
+        @keyframes envelopeHover {
+            0%, 100% { transform: scale(1) translateY(-40px); }
+            50% { transform: scale(1) translateY(-70px); }
+        }
+
+        /* Pivot points for realistic flapping */
+        #left-wing { transform-origin: 480px 400px; }
+        #right-wing { transform-origin: 520px 400px; }
+
+        .container.open #left-wing { animation: flapL 0.8s ease-in-out infinite alternate 1.4s; }
+        .container.open #right-wing { animation: flapR 0.8s ease-in-out infinite alternate 1.4s; }
+
+        @keyframes flapL { from { transform: rotate(0deg); } to { transform: rotate(12deg); } }
+        @keyframes flapR { from { transform: rotate(0deg); } to { transform: rotate(-12deg); } }
+
+        /* --- ENVELOPE --- */
         .envelope {
             position: relative;
-            width: 350px;
-            height: 230px;
-            background: var(--envelope-color);
-            border-bottom-left-radius: 15px;
-            border-bottom-right-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            z-index: 20;
+            width: 400px;
+            height: 250px;
+            background: var(--env-pink);
+            border-radius: 0 0 15px 15px;
+            z-index: 10;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Envelope Flap */
         .envelope::before {
-            content: ''; position: absolute; top: 0; z-index: 30;
-            border-top: 130px solid var(--flap-color);
-            border-left: 175px solid transparent; border-right: 175px solid transparent;
-            transform-origin: top; transition: transform 0.6s ease;
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 75%;
+            background: var(--env-flap);
+            clip-path: polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%);
+            z-index: 12;
         }
 
-        /* --- THE CARD --- */
+        /* --- TEXTURED CARD --- */
         .card {
             position: absolute;
-            bottom: 15px;
-            left: 15px;
-            width: 320px;
-            height: 200px;
-            background: #fff;
-            z-index: 10;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s 0.4s;
-            padding: 25px;
+            width: 380px;
+            height: 350px;
+            background: var(--paper-texture);
+            border-radius: 15px;
+            padding: 15px;
             box-sizing: border-box;
-            text-align: center;
-            border-radius: 12px;
+            z-index: 6;
             opacity: 0;
-            border: 2px solid #ffc1cc;
+            display: flex;
+            transform: translateY(0);
+            transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            background-image: url("https://www.transparenttextures.com/patterns/felt.png");
+        }
+
+        .card-inner {
+            flex: 1;
+            border: 4px solid var(--card-border);
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            padding: 25px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.6);
+            box-sizing: border-box;
         }
 
-        /* --- OPEN STATE --- */
-        .envelope-wrapper.open .envelope::before { 
-            transform: rotateX(180deg); 
-            z-index: 5; /* Flap goes behind card */
-        }
-
-        .envelope-wrapper.open .wing { opacity: 1; }
-        .envelope-wrapper.open .wing-left { animation: flap 2.5s infinite ease-in-out; }
-        .envelope-wrapper.open .wing-right { animation: flap-right 2.5s infinite ease-in-out; }
-
-        .envelope-wrapper.open .card {
-            transform: translateY(-120px); 
+        .container.open .card {
             opacity: 1;
-            z-index: 100; /* Card sits in front of everything */
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: translateY(-290px);
+            z-index: 100;
         }
 
-        #typewriter { font-size: 1.7em; color: #d81b60; line-height: 1.4; font-weight: bold; }
-        
-        .floating-item { 
-            position: absolute; top: -10%; font-size: 20px; 
-            animation: fall linear forwards; pointer-events: none; z-index: 150; 
+        #typewriter {
+            font-size: 1.4rem;
+            color: #2c2c2c;
+            line-height: 1.5;
+            font-weight: bold;
+            min-height: 150px;
+        }
+
+        .heart-particle {
+            position: absolute;
+            top: -10%;
+            animation: fall linear forwards;
+            z-index: 200;
         }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
-        
-        .instruction { 
-            position: absolute; bottom: 8%; color: #d81b60; font-size: 1.5em; 
-            animation: pulse 1.5s infinite; 
-        }
-        @keyframes pulse { 50% { transform: scale(1.1); } }
     </style>
 </head>
 <body>
 
-    <div class="instruction" id="clickText">Click to open your message...</div>
-
-    <div class="envelope-wrapper" onclick="openEnvelope()">
-        <div class="wing wing-left"></div>
-        <div class="wing wing-right"></div>
+    <div class="container" onclick="openSurprise()">
+        <svg class="wings-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="black" stroke-width="1.8" fill="white" stroke-linejoin="round">
+                <g id="left-wing">
+                    <path d="M480,400 C450,350 380,250 250,180 C200,150 100,130 50,180 C30,210 20,250 50,290 C10,280 -10,310 0,350 C10,390 40,410 80,410 C30,420 20,470 70,510 C110,540 170,530 230,490 C190,520 200,570 270,580 C350,590 430,500 480,400 Z" />
+                </g>
+                <g id="right-wing">
+                    <path d="M520,400 C550,350 620,250 750,180 C800,150 900,130 950,180 C970,210 980,250 950,290 C990,280 1010,310 1000,350 C990,390 960,410 920,410 C970,420 980,470 930,510 C890,540 830,530 770,490 C810,520 800,570 730,580 C650,590 570,500 520,400 Z" />
+                </g>
+                <g stroke-opacity="0.2" fill="none" stroke-width="1.2">
+                    <path d="M430,380 Q300,280 100,220" />
+                    <path d="M570,380 Q700,280 900,220" />
+                </g>
+            </g>
+        </svg>
 
         <div class="envelope">
             <div class="card">
-                <div id="typewriter"></div>
-                <div style="font-size: 35px; margin-top: 15px;">❤️</div>
+                <div class="card-inner">
+                    <h2 style="margin:0 0 10px 0; font-size: 2.5rem; color: #222;">For You</h2>
+                    <div id="typewriter"></div>
+                    <div style="margin-top:15px; font-size: 32px;">❤️</div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const message = "YES! \nI would love to be your Sahelii Moti. \nYou are the best! ❤️";
-        let i = 0; let isOpened = false;
+        const message = "Yes! I'll be your valentine. Believe me you're my world as of now. I cannot imagine my life without you. You're still my favourite morning face with those sleepy eyes.";
+        let i = 0;
+        let isOpened = false;
 
-        function openEnvelope() {
+        function openSurprise() {
             if (isOpened) return;
             isOpened = true;
-            
-            document.querySelector('.envelope-wrapper').classList.add('open');
-            document.getElementById('clickText').style.display = 'none';
-
-            setTimeout(typeWriter, 1000);
-            setInterval(createFloatingItems, 300);
+            document.querySelector('.container').classList.add('open');
+            setTimeout(typeWriter, 1200);
+            setInterval(createHeart, 250);
         }
 
         function typeWriter() {
             if (i < message.length) {
                 document.getElementById("typewriter").innerHTML += message.charAt(i);
                 i++;
-                setTimeout(typeWriter, 85);
+                setTimeout(typeWriter, 45);
             }
         }
 
-        function createFloatingItems() {
-            const item = document.createElement('div');
-            item.classList.add('floating-item');
-            const types = ['❤️', '✨', '🌸', '💖']; 
-            item.innerHTML = types[Math.floor(Math.random() * types.length)];
-            item.style.left = Math.random() * 100 + 'vw';
-            item.style.animationDuration = Math.random() * 3 + 4 + 's';
-            document.body.appendChild(item);
-            setTimeout(() => { item.remove(); }, 7000);
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle');
+            const colors = ['#ffffff', '#ffb7c5', '#e91e63', '#4fc3f7', '#81c784', '#ffd54f'];
+            heart.innerHTML = '❤️';
+            heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = Math.random() * 15 + 15 + 'px';
+            heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+            heart.style.opacity = Math.random() * 0.8;
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
         }
     </script>
 </body>
