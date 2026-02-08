@@ -26,27 +26,27 @@
             font-family: 'Dancing Script', cursive;
         }
 
-        /* --- THE WINGS (CSS Shapes - Cannot break) --- */
-        .wing {
-            position: absolute;
-            width: 120px;
-            height: 70px;
-            background: #fff;
-            top: 40px;
-            z-index: 1;
-            opacity: 0.9;
-            transition: 0.8s;
-            clip-path: polygon(0% 20%, 30% 0%, 100% 40%, 70% 100%, 0% 80%);
-            box-shadow: inset 5px 5px 15px rgba(0,0,0,0.1);
-        }
-        .wing-left { left: -100px; transform: scaleX(-1) rotate(-15deg); }
-        .wing-right { right: -100px; transform: rotate(-15deg); }
-
         .envelope-wrapper {
             position: relative;
             cursor: pointer;
             z-index: 10;
         }
+
+        /* --- THE WINGS (Drawn with CSS to match your photo) --- */
+        .wing {
+            position: absolute;
+            width: 120px;
+            height: 70px;
+            background: white;
+            top: 40px;
+            z-index: 1;
+            opacity: 0;
+            transition: 0.8s;
+            border-radius: 50% 50% 50% 50% / 10% 10% 90% 90%;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.1);
+        }
+        .wing-left { left: -90px; transform: scaleX(-1) rotate(-20deg); }
+        .wing-right { right: -90px; transform: rotate(-20deg); }
 
         .envelope {
             position: relative;
@@ -56,10 +56,10 @@
             border-bottom-left-radius: 15px;
             border-bottom-right-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            z-index: 20; /* Behind card when open */
+            z-index: 20;
         }
 
-        /* --- MINI BOWS --- */
+        /* Scattered Bows */
         .mini-bow {
             position: absolute; width: 22px; height: 14px;
             background: var(--bow-red); border-radius: 50%; z-index: 25;
@@ -71,7 +71,7 @@
         .mini-bow::before { left: -6px; transform: rotate(-45deg); }
         .mini-bow::after { right: -6px; transform: rotate(45deg); }
 
-        /* --- ENVELOPE FLAP --- */
+        /* Flap */
         .envelope::before {
             content: ''; position: absolute; top: 0; z-index: 21;
             border-top: 130px solid var(--flap-color);
@@ -79,7 +79,7 @@
             transform-origin: top; transition: transform 0.6s 0.3s;
         }
 
-        /* --- THE CARD (Foreground Layer) --- */
+        /* --- THE CARD (Front Layer) --- */
         .card {
             position: absolute;
             bottom: 10px;
@@ -87,57 +87,49 @@
             width: 320px;
             height: 200px;
             background: #fff;
-            z-index: 5; /* Starts behind */
+            z-index: 5; /* Starts behind the envelope flap */
             transition: transform 0.8s ease-in-out, z-index 0s 0.4s;
             padding: 25px;
             box-sizing: border-box;
             text-align: center;
             border-radius: 10px;
+            opacity: 0;
             border: 2px solid #ffc1cc;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
 
-        /* --- CSS DANCING COUPLE (Cannot break) --- */
-        .couple-box {
+        /* Dancing Couple (System Emoji - Cannot break) */
+        .couple-container {
             position: absolute;
-            bottom: 0px;
-            left: -140px;
-            width: 120px;
-            height: 150px;
+            bottom: -20px;
+            left: -130px;
+            font-size: 80px;
             z-index: 100;
             display: none;
-            text-align: center;
-            animation: sway 2s infinite ease-in-out;
+            animation: bounce 2s infinite ease-in-out;
         }
-        .couple-box span { font-size: 80px; filter: drop-shadow(0 0 5px white); }
-
-        @keyframes sway {
-            0%, 100% { transform: rotate(-10deg) translateY(0); }
-            50% { transform: rotate(10deg) translateY(-20px); }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
         }
 
-        /* --- OPEN STATE LOGIC --- */
+        /* --- OPEN STATE --- */
         .envelope-wrapper.open .envelope::before { transform: rotateX(180deg); z-index: 0; }
-        
+        .envelope-wrapper.open .wing { opacity: 1; }
+        .envelope-wrapper.open .wing-left { transform: scaleX(-1) translate(-20px, -20px) rotate(-30deg); }
+        .envelope-wrapper.open .wing-right { transform: translate(20px, -20px) rotate(-30deg); }
+
         .envelope-wrapper.open .card {
             transform: translateY(-280px);
-            height: 400px;
-            z-index: 200; /* FORCE TO FRONT */
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            height: 420px;
             opacity: 1;
+            z-index: 200; /* MOVES TO THE VERY FRONT */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
+        .envelope-wrapper.open .couple-container { display: block; }
 
-        .envelope-wrapper.open .couple-box { display: block; }
-        .envelope-wrapper.open .wing-left { transform: scaleX(-1) translate(20px, -40px) rotate(-35deg); }
-        .envelope-wrapper.open .wing-right { transform: translate(20px, -40px) rotate(-35deg); }
-
-        #typewriter { font-size: 1.8em; color: #d81b60; line-height: 1.4; font-weight: bold; }
+        #typewriter { font-size: 1.8em; color: #d81b60; line-height: 1.4; }
         .floating-item { position: absolute; top: -10%; font-size: 20px; animation: fall linear forwards; pointer-events: none; z-index: 300; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
-        
         .instruction { position: absolute; bottom: 8%; color: #d81b60; font-size: 1.5em; animation: pulse 1.5s infinite; }
         @keyframes pulse { 50% { transform: scale(1.1); } }
     </style>
@@ -156,13 +148,10 @@
         <div class="mini-bow" style="top: 90px; right: 120px; transform: rotate(15deg);"></div>
         <div class="mini-bow" style="bottom: 50px; right: 10px; transform: rotate(-25deg);"></div>
 
-        <div class="couple-box" id="couple">
-            <span>👫</span>
-            <div style="font-size: 20px;">💃🕺</div>
-        </div>
+        <div class="couple-container">👫</div>
 
         <div class="envelope">
-            <div class="card" id="card">
+            <div class="card">
                 <div id="typewriter"></div>
                 <div style="font-size: 45px; margin-top: 15px;">❤️</div>
             </div>
@@ -170,7 +159,7 @@
     </div>
 
     <audio id="bgMusic" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+        <source src="https://www.mboxdrive.com/Perfect%20Instrumental.mp3" type="audio/mpeg">
     </audio>
 
     <script>
@@ -180,12 +169,11 @@
         function openEnvelope() {
             if (isOpened) return;
             isOpened = true;
-            
             document.querySelector('.envelope-wrapper').classList.add('open');
             document.getElementById('clickText').style.display = 'none';
             
             const music = document.getElementById('bgMusic');
-            music.play().catch(() => console.log("Audio waiting for user."));
+            music.play().catch(e => console.log("Music ready after click!"));
 
             setTimeout(typeWriter, 1200);
             setInterval(createFloatingItems, 300);
@@ -195,7 +183,7 @@
             if (i < message.length) {
                 document.getElementById("typewriter").innerHTML += message.charAt(i);
                 i++;
-                setTimeout(typeWriter, 80);
+                setTimeout(typeWriter, 100);
             }
         }
 
