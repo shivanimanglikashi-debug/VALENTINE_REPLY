@@ -10,6 +10,7 @@
             --pink-bg: #ffeef2;
             --envelope-color: #f06292;
             --flap-color: #f48fb1;
+            --card-white: #ffffff;
         }
 
         body {
@@ -29,9 +30,10 @@
             position: relative;
             cursor: pointer;
             z-index: 10;
+            perspective: 1000px;
         }
 
-        /* --- REALISTIC FEATHERED WINGS --- */
+        /* --- WINGS --- */
         .wing {
             position: absolute;
             width: 170px;
@@ -42,29 +44,18 @@
             opacity: 0;
             transition: all 0.9s ease-in-out;
             border-radius: 0% 100% 40% 60% / 0% 100% 20% 80%;
-            box-shadow: 
-                -5px 10px 20px rgba(0,0,0,0.1),
-                inset 10px -10px 20px rgba(255,255,255,1);
+            box-shadow: -5px 10px 20px rgba(0,0,0,0.1), inset 10px -10px 20px rgba(255,255,255,1);
         }
-        
-        .wing-left { 
-            left: -140px; 
-            transform: rotate(-10deg) skewY(-5deg);
-        }
-        
-        .wing-right { 
-            right: -140px; 
-            transform: scaleX(-1) rotate(-10deg) skewY(-5deg); 
-        }
+        .wing-left { left: -140px; transform: rotate(-10deg) skewY(-5deg); }
+        .wing-right { right: -140px; transform: scaleX(-1) rotate(-10deg) skewY(-5deg); }
 
-        /* Gentle Flap Animation */
         @keyframes flap {
             0%, 100% { transform: rotate(-10deg) skewY(-5deg); }
-            50% { transform: rotate(-20deg) translateY(-10px) skewY(-8deg); }
+            50% { transform: rotate(-22deg) translateY(-10px); }
         }
         @keyframes flap-right {
             0%, 100% { transform: scaleX(-1) rotate(-10deg) skewY(-5deg); }
-            50% { transform: scaleX(-1) rotate(-20deg) translateY(-10px) skewY(-8deg); }
+            50% { transform: scaleX(-1) rotate(-22deg) translateY(-10px); }
         }
 
         .envelope {
@@ -74,11 +65,10 @@
             background: var(--envelope-color);
             border-bottom-left-radius: 15px;
             border-bottom-right-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             z-index: 20;
         }
 
-        /* Envelope Flap */
         .envelope::before {
             content: ''; position: absolute; top: 0; z-index: 30;
             border-top: 130px solid var(--flap-color);
@@ -86,71 +76,79 @@
             transform-origin: top; transition: transform 0.6s ease;
         }
 
-        /* --- THE CARD --- */
+        /* --- THE REALISTIC CARD --- */
         .card {
             position: absolute;
-            bottom: 15px;
+            bottom: 20px;
             left: 15px;
             width: 320px;
-            height: 200px;
-            background: #fff;
+            height: 220px;
+            background: var(--card-white);
+            /* Paper Texture Effect */
+            background-image: 
+                linear-gradient(90deg, rgba(200,0,0,.02) 50%, transparent 50%),
+                linear-gradient(rgba(200,0,0,.02) 50%, transparent 50%);
+            background-size: 2px 2px;
+            
             z-index: 10;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s 0.4s;
-            padding: 25px;
+            opacity: 0;
+            padding: 30px;
             box-sizing: border-box;
             text-align: center;
-            border-radius: 12px;
-            opacity: 0;
-            border: 2px solid #ffc1cc;
+            border-radius: 5px; /* Sharper corners look more like real cardstock */
+            
+            /* Bezel effect to simulate paper thickness */
+            border: 1px solid #e0e0e0;
+            border-bottom: 3px solid #d0d0d0; 
+            
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.2), z-index 0s 0.4s;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
-        /* --- OPEN STATE --- */
-        .envelope-wrapper.open .envelope::before { 
-            transform: rotateX(180deg); 
-            z-index: 5; /* Flap goes behind card */
-        }
-
+        /* OPEN STATE */
+        .envelope-wrapper.open .envelope::before { transform: rotateX(180deg); z-index: 5; }
         .envelope-wrapper.open .wing { opacity: 1; }
         .envelope-wrapper.open .wing-left { animation: flap 2.5s infinite ease-in-out; }
         .envelope-wrapper.open .wing-right { animation: flap-right 2.5s infinite ease-in-out; }
 
         .envelope-wrapper.open .card {
-            transform: translateY(-120px); 
+            /* Slight 2-degree tilt makes it look hand-placed */
+            transform: translateY(-130px) rotate(-2deg); 
             opacity: 1;
-            z-index: 100; /* Card sits in front of everything */
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            z-index: 100;
+            /* Multi-layered shadow for depth */
+            box-shadow: 
+                0 5px 15px rgba(0,0,0,0.1),
+                0 20px 40px rgba(0,0,0,0.15);
         }
 
-        #typewriter { font-size: 1.7em; color: #d81b60; line-height: 1.4; font-weight: bold; }
-        
-        .floating-item { 
-            position: absolute; top: -10%; font-size: 20px; 
-            animation: fall linear forwards; pointer-events: none; z-index: 150; 
+        #typewriter { 
+            font-size: 1.7em; 
+            color: #444; /* Darker grey looks more like real ink */
+            line-height: 1.4; 
+            font-weight: bold;
+            text-shadow: 0.5px 0.5px 0px rgba(0,0,0,0.1);
         }
+        
+        .floating-item { position: absolute; top: -10%; font-size: 20px; animation: fall linear forwards; z-index: 150; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
-        
-        .instruction { 
-            position: absolute; bottom: 8%; color: #d81b60; font-size: 1.5em; 
-            animation: pulse 1.5s infinite; 
-        }
+        .instruction { position: absolute; bottom: 8%; color: #d81b60; font-size: 1.5em; animation: pulse 1.5s infinite; }
         @keyframes pulse { 50% { transform: scale(1.1); } }
     </style>
 </head>
 <body>
 
-    <div class="instruction" id="clickText">Click to open your message...</div>
+    <div class="instruction" id="clickText">Click to open...</div>
 
     <div class="envelope-wrapper" onclick="openEnvelope()">
         <div class="wing wing-left"></div>
         <div class="wing wing-right"></div>
-
         <div class="envelope">
             <div class="card">
                 <div id="typewriter"></div>
-                <div style="font-size: 35px; margin-top: 15px;">❤️</div>
+                <div style="font-size: 30px; margin-top: 15px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));">❤️</div>
             </div>
         </div>
     </div>
@@ -162,10 +160,8 @@
         function openEnvelope() {
             if (isOpened) return;
             isOpened = true;
-            
             document.querySelector('.envelope-wrapper').classList.add('open');
             document.getElementById('clickText').style.display = 'none';
-
             setTimeout(typeWriter, 1000);
             setInterval(createFloatingItems, 300);
         }
