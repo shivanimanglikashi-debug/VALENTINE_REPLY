@@ -32,21 +32,28 @@
             z-index: 10;
         }
 
-        /* --- THE WINGS (Pure CSS - Always visible) --- */
+        /* --- STYLIZED CSS WINGS --- */
         .wing {
             position: absolute;
-            width: 130px;
-            height: 70px;
-            background: #fff;
-            top: 30px;
+            width: 150px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.9);
+            top: 20px;
             z-index: 5;
             opacity: 0;
-            transition: 0.8s ease;
-            border-radius: 50% 50% 50% 50% / 20% 20% 80% 80%;
-            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.05), 0 5px 10px rgba(0,0,0,0.1);
+            transition: all 0.8s ease;
+            /* Creating a feathered wing shape using border-radius */
+            border-radius: 20% 100% 20% 100%;
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.05), 0 5px 15px rgba(0,0,0,0.1);
         }
-        .wing-left { left: -100px; transform: scaleX(-1) rotate(-15deg); }
-        .wing-right { right: -100px; transform: rotate(-15deg); }
+        .wing-left { 
+            left: -120px; 
+            transform: rotate(-20deg) skewY(-10deg); 
+        }
+        .wing-right { 
+            right: -120px; 
+            transform: scaleX(-1) rotate(-20deg) skewY(-10deg); 
+        }
 
         .envelope {
             position: relative;
@@ -59,7 +66,7 @@
             z-index: 20;
         }
 
-        /* Red Bows scattered on envelope base */
+        /* Red Bow Decorations */
         .mini-bow {
             position: absolute; width: 22px; height: 14px;
             background: var(--bow-red); border-radius: 50%; z-index: 25;
@@ -71,7 +78,7 @@
         .mini-bow::before { left: -6px; transform: rotate(-45deg); }
         .mini-bow::after { right: -6px; transform: rotate(45deg); }
 
-        /* Flap */
+        /* Envelope Flap */
         .envelope::before {
             content: ''; position: absolute; top: 0; z-index: 30;
             border-top: 130px solid var(--flap-color);
@@ -79,7 +86,7 @@
             transform-origin: top; transition: transform 0.6s;
         }
 
-        /* --- THE CARD (Comes in FRONT of envelope) --- */
+        /* --- THE CARD (Foreground Pop-up) --- */
         .card {
             position: absolute;
             bottom: 15px;
@@ -87,44 +94,54 @@
             width: 320px;
             height: 200px;
             background: #fff;
-            z-index: 10; /* Initially hidden inside */
+            z-index: 10; /* Hidden inside */
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s 0.4s;
-            padding: 20px;
+            padding: 25px;
             box-sizing: border-box;
             text-align: center;
             border-radius: 10px;
             opacity: 0;
-            border: 1px solid #ffc1cc;
+            border: 2px solid #ffc1cc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        /* --- OPEN STATE --- */
+        /* --- OPEN STATE LOGIC --- */
         .envelope-wrapper.open .envelope::before { 
             transform: rotateX(180deg); 
             z-index: 5; /* Flap moves to back */
         }
 
         .envelope-wrapper.open .wing { opacity: 1; }
-        .envelope-wrapper.open .wing-left { transform: scaleX(-1) translate(-10px, -10px) rotate(-20deg); }
-        .envelope-wrapper.open .wing-right { transform: translate(10px, -10px) rotate(-20deg); }
+        .envelope-wrapper.open .wing-left { transform: rotate(-35deg) skewY(-10deg) translate(-20px, -20px); }
+        .envelope-wrapper.open .wing-right { transform: scaleX(-1) rotate(-35deg) skewY(-10deg) translate(-20px, -20px); }
 
         .envelope-wrapper.open .card {
-            transform: translateY(-100px); /* Slides up to sit on the envelope */
+            transform: translateY(-120px); /* Slides up to sit in front */
             opacity: 1;
-            z-index: 100; /* BRINGS IT TO THE FRONT */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            z-index: 100; /* FORCE TO FRONT */
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
         }
 
-        #typewriter { font-size: 1.6em; color: #d81b60; line-height: 1.4; margin-top: 10px; }
-        .floating-item { position: absolute; top: -10%; font-size: 20px; animation: fall linear forwards; pointer-events: none; z-index: 150; }
+        #typewriter { font-size: 1.7em; color: #d81b60; line-height: 1.4; font-weight: bold; }
+        
+        .floating-item { 
+            position: absolute; top: -10%; font-size: 20px; 
+            animation: fall linear forwards; pointer-events: none; z-index: 150; 
+        }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
         
-        .instruction { position: absolute; bottom: 8%; color: #d81b60; font-size: 1.5em; animation: pulse 1.5s infinite; }
+        .instruction { 
+            position: absolute; bottom: 8%; color: #d81b60; font-size: 1.5em; 
+            animation: pulse 1.5s infinite; 
+        }
         @keyframes pulse { 50% { transform: scale(1.1); } }
     </style>
 </head>
 <body>
 
-    <div class="instruction" id="clickText">Click the envelope to open...</div>
+    <div class="instruction" id="clickText">Click the envelope to open!</div>
 
     <div class="envelope-wrapper" onclick="openEnvelope()">
         <div class="wing wing-left"></div>
@@ -145,8 +162,8 @@
     </div>
 
     <audio id="bgMusic" loop>
-        <source src="https://www.mboxdrive.com/Ed%20Sheeran%20-%20Perfect.mp3" type="audio/mpeg">
-    </audio>
+        <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Kai_Engel/Satin/Kai_Engel_-_04_-_Moonlight_Reprise.mp3" type="audio/mpeg">
+        </audio>
 
     <script>
         const message = "YES! \nI would love to be your Sahelii Moti. \nYou are the best! ❤️";
@@ -155,12 +172,12 @@
         function openEnvelope() {
             if (isOpened) return;
             isOpened = true;
+            
             document.querySelector('.envelope-wrapper').classList.add('open');
             document.getElementById('clickText').style.display = 'none';
             
-            // Start music
             const music = document.getElementById('bgMusic');
-            music.play().catch(() => console.log("Music play blocked - will play on next click"));
+            music.play().catch(e => console.log("Audio play needs user interaction first."));
 
             setTimeout(typeWriter, 1000);
             setInterval(createFloatingItems, 300);
@@ -177,7 +194,7 @@
         function createFloatingItems() {
             const item = document.createElement('div');
             item.classList.add('floating-item');
-            const types = ['❤️', '🪶', '🌸', '💖', '🎀']; 
+            const types = ['❤️', '✨', '🌸', '💖', '🎀']; 
             item.innerHTML = types[Math.floor(Math.random() * types.length)];
             item.style.left = Math.random() * 100 + 'vw';
             item.style.animationDuration = Math.random() * 3 + 4 + 's';
