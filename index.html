@@ -3,47 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Request Accepted</title>
+    <title>A Special Letter For You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
         body { 
-            background-color: #0d1117; 
-            color: #58a6ff; 
-            font-family: 'Courier New', monospace; 
+            background-color: #ffeef2; /* Soft love-themed pink */
+            background-image: radial-gradient(#ffc1cc 1px, transparent 1px);
+            background-size: 20px 20px; /* Subtle heart-dot pattern */
+            color: #d81b60; 
+            font-family: 'Dancing Script', cursive; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
             margin: 0;
             overflow: hidden;
+            position: relative;
         }
         .container {
-            border: 1px solid #30363d;
-            padding: 40px;
-            background: #161b22;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: none;
+            padding: 50px;
+            background: rgba(255, 255, 255, 0.9); /* Glassy white paper look */
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(216, 27, 96, 0.2);
             max-width: 80%;
+            z-index: 10;
+            text-align: center;
+            position: relative;
         }
-        .line { margin-bottom: 10px; }
-        .success { color: #3fb950; font-weight: bold; }
-        .heart { color: #f85149; font-size: 50px; margin-top: 20px; text-align: center; animation: pulse 1s infinite; }
+        .container::before {
+            content: "♥";
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 20px;
+            opacity: 0.5;
+        }
+        .my-message {
+            font-size: 2.2em;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+        }
+        .heart-main { color: #ff4d6d; font-size: 60px; animation: pulse 1s infinite; }
         @keyframes pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
             100% { transform: scale(1); }
         }
-        .cursor { border-left: 8px solid #58a6ff; margin-left: 5px; animation: blink 0.7s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
+        .falling-heart {
+            position: absolute;
+            top: -10%;
+            color: #ff8fa3;
+            font-size: 25px;
+            user-select: none;
+            animation: fall linear forwards;
+            pointer-events: none;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="line">> Incoming connection from Sahelii Moti...</div>
-        <div class="line">> Handshake protocol initiated... <span class="success">[CONNECTED]</span></div>
-        <div class="line">> Authenticating feelings... <span class="success">[VERIFIED]</span></div>
-        <div class="line">> Status: <span class="success">200 OK</span></div>
-        <div class="line" style="font-size: 1.5em; margin-top: 20px;">> RESPONSE: <b>YES!</b><span class="cursor"></span></div>
-        <div class="heart">❤️</div>
+        <div class="my-message">
+YES! 
+I would love to be your Sahelii Moti. 
+You are the best! ❤️
+        </div>
+        <div class="heart-main">❤️</div>
     </div>
+
+    <script>
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('falling-heart');
+            // Randomly pick between different heart colors/shapes
+            const types = ['❤️', '💖', '💕', '🌸'];
+            heart.innerHTML = types[Math.floor(Math.random() * types.length)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+            heart.style.opacity = Math.random() * 0.7 + 0.3;
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 6000);
+        }
+        setInterval(createHeart, 400);
+    </script>
 </body>
 </html>
