@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Animated sky background */
             --bg-top: #d35d47;
             --bg-bottom: #f4c2b5;
             --env-pink: #d9859a;
@@ -34,20 +33,6 @@
             to { background-position: 0% 100%; }
         }
 
-        /* Subtle floating clouds in background */
-        body::before {
-            content: "☁";
-            position: absolute;
-            font-size: 100px;
-            color: rgba(255,255,255,0.2);
-            top: 20%; left: -10%;
-            animation: cloudMove 25s linear infinite;
-        }
-
-        @keyframes cloudMove {
-            to { transform: translateX(120vw); }
-        }
-
         .container {
             position: relative;
             cursor: pointer;
@@ -57,41 +42,7 @@
             z-index: 10;
         }
 
-        /* --- WINGS ATTACHED TO SIDES --- */
-        .wings-svg {
-            position: absolute;
-            width: 950px;
-            height: 500px;
-            z-index: 5;
-            opacity: 0;
-            transform: scale(0.2);
-            transition: all 1.4s cubic-bezier(0.19, 1, 0.22, 1);
-            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) drop-shadow(0 10px 20px rgba(0,0,0,0.2));
-            pointer-events: none;
-        }
-
-        .container.open .wings-svg {
-            opacity: 1;
-            transform: scale(1) translateY(-40px);
-            animation: envelopeHover 4s ease-in-out infinite 1.4s;
-        }
-
-        @keyframes envelopeHover {
-            0%, 100% { transform: scale(1) translateY(-40px); }
-            50% { transform: scale(1) translateY(-70px); }
-        }
-
-        /* Pivot points for realistic flapping */
-        #left-wing { transform-origin: 480px 400px; }
-        #right-wing { transform-origin: 520px 400px; }
-
-        .container.open #left-wing { animation: flapL 0.8s ease-in-out infinite alternate 1.4s; }
-        .container.open #right-wing { animation: flapR 0.8s ease-in-out infinite alternate 1.4s; }
-
-        @keyframes flapL { from { transform: rotate(0deg); } to { transform: rotate(12deg); } }
-        @keyframes flapR { from { transform: rotate(0deg); } to { transform: rotate(-12deg); } }
-
-        /* --- ENVELOPE --- */
+        /* --- ENVELOPE BODY --- */
         .envelope {
             position: relative;
             width: 400px;
@@ -103,8 +54,64 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: transform 1.4s ease-in-out;
         }
 
+        /* --- WINGS ATTACHED DIRECTLY TO EDGES --- */
+        .wing {
+            position: absolute;
+            width: 300px; /* Individual wing size */
+            height: 250px;
+            top: -20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6));
+        }
+
+        .wing.left {
+            right: 100%; /* Sticks to left edge */
+            transform-origin: right center;
+        }
+
+        .wing.right {
+            left: 100%; /* Sticks to right edge */
+            transform-origin: left center;
+        }
+
+        /* FLAPPING ANIMATION */
+        .container.open .wing {
+            opacity: 1;
+        }
+
+        .container.open .wing.left {
+            animation: flapLeft 0.6s ease-in-out infinite alternate 1.4s;
+        }
+
+        .container.open .wing.right {
+            animation: flapRight 0.6s ease-in-out infinite alternate 1.4s;
+        }
+
+        @keyframes flapLeft {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(50deg); }
+        }
+
+        @keyframes flapRight {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(-50deg); }
+        }
+
+        /* Floating motion for the whole envelope */
+        .container.open .envelope {
+            animation: float 3s ease-in-out infinite 1.4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        /* --- ENVELOPE FLAP --- */
         .envelope::before {
             content: '';
             position: absolute;
@@ -124,13 +131,18 @@
             border-radius: 15px;
             padding: 15px;
             box-sizing: border-box;
-            z-index: 6;
+            z-index: 5;
             opacity: 0;
             display: flex;
             transform: translateY(0);
             transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
             background-image: url("https://www.transparenttextures.com/patterns/felt.png");
+        }
+
+        .container.open .card {
+            opacity: 1;
+            transform: translateY(-290px);
+            z-index: 100;
         }
 
         .card-inner {
@@ -144,13 +156,6 @@
             padding: 25px;
             text-align: center;
             background: rgba(255, 255, 255, 0.6);
-            box-sizing: border-box;
-        }
-
-        .container.open .card {
-            opacity: 1;
-            transform: translateY(-290px);
-            z-index: 100;
         }
 
         #typewriter {
@@ -173,22 +178,16 @@
 <body>
 
     <div class="container" onclick="openSurprise()">
-        <svg class="wings-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
-            <g stroke="black" stroke-width="1.8" fill="white" stroke-linejoin="round">
-                <g id="left-wing">
-                    <path d="M480,400 C450,350 380,250 250,180 C200,150 100,130 50,180 C30,210 20,250 50,290 C10,280 -10,310 0,350 C10,390 40,410 80,410 C30,420 20,470 70,510 C110,540 170,530 230,490 C190,520 200,570 270,580 C350,590 430,500 480,400 Z" />
-                </g>
-                <g id="right-wing">
-                    <path d="M520,400 C550,350 620,250 750,180 C800,150 900,130 950,180 C970,210 980,250 950,290 C990,280 1010,310 1000,350 C990,390 960,410 920,410 C970,420 980,470 930,510 C890,540 830,530 770,490 C810,520 800,570 730,580 C650,590 570,500 520,400 Z" />
-                </g>
-                <g stroke-opacity="0.2" fill="none" stroke-width="1.2">
-                    <path d="M430,380 Q300,280 100,220" />
-                    <path d="M570,380 Q700,280 900,220" />
-                </g>
-            </g>
-        </svg>
-
+        
         <div class="envelope">
+            <svg class="wing left" viewBox="0 0 400 500">
+                <path d="M400,350 C350,300 280,200 150,130 C100,100 0,80 -50,130 C-70,160 -80,210 -50,260 C-90,250 -110,280 -100,320 C-90,360 -60,380 -20,380 C-70,390 -80,440 -30,480 C10,510 70,500 130,460 C90,490 100,540 170,550 C250,560 330,470 400,350 Z" fill="white" stroke="black" stroke-width="2"/>
+            </svg>
+
+            <svg class="wing right" viewBox="0 0 400 500">
+                <path d="M0,350 C50,300 120,200 250,130 C300,100 400,80 450,130 C470,160 480,210 450,260 C490,250 510,280 500,320 C490,360 460,380 420,380 C470,390 480,440 430,480 C390,510 330,500 270,460 C310,490 300,540 230,550 C150,560 70,470 0,350 Z" fill="white" stroke="black" stroke-width="2"/>
+            </svg>
+
             <div class="card">
                 <div class="card-inner">
                     <h2 style="margin:0 0 10px 0; font-size: 2.5rem; color: #222;">For You</h2>
