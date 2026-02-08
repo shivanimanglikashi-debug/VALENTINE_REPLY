@@ -29,9 +29,25 @@
         .envelope-wrapper {
             position: relative;
             cursor: pointer;
-            z-index: 10;
+            z-index: 5;
             transition: 0.5s;
         }
+
+        /* --- THE WINGS (Pure CSS so they never break) --- */
+        .wing {
+            position: absolute;
+            width: 100px;
+            height: 60px;
+            background: white;
+            border-radius: 0 100px 100px 100px;
+            top: 40px;
+            z-index: 1;
+            opacity: 0;
+            transition: 0.8s;
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.05);
+        }
+        .wing-left { left: -80px; transform: scaleX(-1) rotate(-20deg); }
+        .wing-right { right: -80px; transform: rotate(-20deg); }
 
         .envelope {
             position: relative;
@@ -41,12 +57,13 @@
             border-bottom-left-radius: 15px;
             border-bottom-right-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 10;
         }
 
-        /* Scattered Bows */
+        /* --- MINI BOWS --- */
         .mini-bow {
             position: absolute; width: 22px; height: 14px;
-            background: var(--bow-red); border-radius: 50%; z-index: 11;
+            background: var(--bow-red); border-radius: 50%; z-index: 12;
         }
         .mini-bow::before, .mini-bow::after {
             content: ''; position: absolute; width: 14px; height: 18px;
@@ -55,59 +72,61 @@
         .mini-bow::before { left: -6px; transform: rotate(-45deg); }
         .mini-bow::after { right: -6px; transform: rotate(45deg); }
 
-        /* The Wings (styled like your paper craft image) */
-        .envelope-wings {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
-        .wing {
-            position: absolute;
-            width: 120px;
-            top: 20px;
-            transition: 0.8s;
-            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
-        }
-        .wing-left { left: -90px; transform: rotate(-10deg); }
-        .wing-right { right: -90px; transform: rotate(10deg) scaleX(-1); }
-
+        /* --- ENVELOPE FLAP --- */
         .envelope::before {
-            content: ''; position: absolute; top: 0; z-index: 4;
+            content: ''; position: absolute; top: 0; z-index: 11;
             border-top: 130px solid var(--flap-color);
             border-left: 175px solid transparent; border-right: 175px solid transparent;
             transform-origin: top; transition: transform 0.6s 0.3s;
         }
 
+        /* --- THE CARD (Front Layer) --- */
         .card {
-            position: absolute; bottom: 10px; left: 15px; width: 320px; height: 200px;
-            background: #fff; z-index: 2; transition: 0.8s ease-in-out;
-            padding: 25px; box-sizing: border-box; text-align: center;
-            border-radius: 10px; opacity: 0; border: 1px solid #ffc1cc;
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            width: 320px;
+            height: 200px;
+            background: #fff;
+            z-index: 8;
+            transition: 0.8s ease-in-out;
+            padding: 25px;
+            box-sizing: border-box;
+            text-align: center;
+            border-radius: 10px;
+            opacity: 0;
+            border: 2px solid #ffc1cc;
         }
 
-        /* New Stable Couple Image */
+        /* --- DANCING COUPLE (New Stable Link) --- */
         .couple-container {
             position: absolute;
-            bottom: -30px;
-            left: -150px;
-            width: 180px;
-            z-index: 20;
+            bottom: -20px;
+            left: -130px;
+            width: 160px;
+            z-index: 40; 
             display: none;
-            animation: dance 2s infinite ease-in-out;
+            animation: float 2s infinite ease-in-out;
         }
-        @keyframes dance {
-            0%, 100% { transform: translateY(0) rotate(-5deg); }
-            50% { transform: translateY(-15px) rotate(5deg); }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
 
+        /* --- OPEN STATE --- */
         .envelope-wrapper.open .envelope::before { transform: rotateX(180deg); z-index: 0; }
-        .envelope-wrapper.open .card { transform: translateY(-240px); height: 420px; opacity: 1; z-index: 5; }
+        .envelope-wrapper.open .wing { opacity: 1; }
+        .envelope-wrapper.open .wing-left { transform: scaleX(-1) translate(20px, -30px) rotate(-30deg); }
+        .envelope-wrapper.open .wing-right { transform: translate(20px, -30px) rotate(-30deg); }
+
+        .envelope-wrapper.open .card {
+            transform: translateY(-260px);
+            height: 420px;
+            opacity: 1;
+            z-index: 50; /* STAYS IN FRONT */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
         .envelope-wrapper.open .couple-container { display: block; }
-        .envelope-wrapper.open .wing-left { transform: translate(-20px, -20px) rotate(-20deg); }
-        .envelope-wrapper.open .wing-right { transform: translate(20px, -20px) rotate(20deg) scaleX(-1); }
 
         #typewriter { font-size: 1.8em; color: #d81b60; line-height: 1.4; }
         .floating-item { position: absolute; top: -10%; font-size: 20px; animation: fall linear forwards; pointer-events: none; }
@@ -121,10 +140,8 @@
     <div class="instruction" id="clickText">Click to open the envelope...</div>
 
     <div class="envelope-wrapper" onclick="openEnvelope()">
-        <div class="envelope-wings">
-            <img src="https://i.ibb.co/v4m0Yv8/wings.png" class="wing wing-left" onerror="this.src='https://cdn-icons-png.flaticon.com/512/5405/5405904.png'">
-            <img src="https://i.ibb.co/v4m0Yv8/wings.png" class="wing wing-right" onerror="this.src='https://cdn-icons-png.flaticon.com/512/5405/5405904.png'">
-        </div>
+        <div class="wing wing-left"></div>
+        <div class="wing wing-right"></div>
 
         <div class="mini-bow" style="top: 20px; left: 40px; transform: rotate(-15deg);"></div>
         <div class="mini-bow" style="top: 150px; right: 40px; transform: rotate(20deg);"></div>
@@ -145,7 +162,7 @@
     </div>
 
     <audio id="bgMusic" loop>
-        <source src="https://cdn.pixabay.com/audio/2022/10/14/audio_9939f04533.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
     </audio>
 
     <script>
@@ -157,7 +174,10 @@
             isOpened = true;
             document.querySelector('.envelope-wrapper').classList.add('open');
             document.getElementById('clickText').style.display = 'none';
-            document.getElementById('bgMusic').play();
+            
+            const music = document.getElementById('bgMusic');
+            music.play().catch(() => console.log("Music blocked by browser until interaction."));
+
             setTimeout(typeWriter, 1200);
             setInterval(createFloatingItems, 300);
         }
