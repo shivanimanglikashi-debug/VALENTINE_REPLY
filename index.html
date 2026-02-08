@@ -10,7 +10,7 @@
             --pink-bg: #ffeef2;
             --envelope-color: #f06292;
             --flap-color: #f48fb1;
-            --card-white: #ffffff;
+            --card-border: #f48fb1;
         }
 
         body {
@@ -30,109 +30,120 @@
             position: relative;
             cursor: pointer;
             z-index: 10;
-            perspective: 1000px;
         }
 
-        /* --- WINGS --- */
+        /* --- DETAILED FEATHERED WINGS --- */
         .wing {
             position: absolute;
-            width: 170px;
-            height: 100px;
-            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-            top: 10px;
+            width: 220px;
+            height: 130px;
+            top: -30px;
             z-index: 5;
             opacity: 0;
-            transition: all 0.9s ease-in-out;
-            border-radius: 0% 100% 40% 60% / 0% 100% 20% 80%;
-            box-shadow: -5px 10px 20px rgba(0,0,0,0.1), inset 10px -10px 20px rgba(255,255,255,1);
-        }
-        .wing-left { left: -140px; transform: rotate(-10deg) skewY(-5deg); }
-        .wing-right { right: -140px; transform: scaleX(-1) rotate(-10deg) skewY(-5deg); }
-
-        @keyframes flap {
-            0%, 100% { transform: rotate(-10deg) skewY(-5deg); }
-            50% { transform: rotate(-22deg) translateY(-10px); }
-        }
-        @keyframes flap-right {
-            0%, 100% { transform: scaleX(-1) rotate(-10deg) skewY(-5deg); }
-            50% { transform: scaleX(-1) rotate(-22deg) translateY(-10px); }
+            transition: all 1s ease-in-out;
+            pointer-events: none;
         }
 
+        .wing::before, .wing::after {
+            content: '';
+            position: absolute;
+            background: #fff;
+            border-radius: 0% 100% 30% 70%;
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .wing-left { left: -180px; transform: rotate(-10deg); }
+        .wing-right { right: -180px; transform: scaleX(-1) rotate(-10deg); }
+
+        .wing::before { width: 100%; height: 100%; top: 0; left: 0; opacity: 0.8; }
+        .wing::after { width: 85%; height: 85%; top: 15px; left: 10px; opacity: 1; filter: drop-shadow(-3px 3px 4px rgba(0,0,0,0.08)); }
+
+        /* --- TEXTURED ENVELOPE --- */
         .envelope {
             position: relative;
             width: 350px;
             height: 230px;
-            background: var(--envelope-color);
+            background-color: var(--envelope-color);
+            /* Linen/Paper Texture */
+            background-image: 
+                linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
+                linear-gradient(rgba(255,255,255,.07) 50%, transparent 50%);
+            background-size: 4px 4px;
+            
             border-bottom-left-radius: 15px;
             border-bottom-right-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.2),
+                inset 0 -10px 20px rgba(0,0,0,0.1); /* Adds depth to the bottom */
             z-index: 20;
         }
 
+        /* Textured Flap */
         .envelope::before {
             content: ''; position: absolute; top: 0; z-index: 30;
             border-top: 130px solid var(--flap-color);
             border-left: 175px solid transparent; border-right: 175px solid transparent;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
             transform-origin: top; transition: transform 0.6s ease;
         }
 
-        /* --- THE REALISTIC CARD --- */
+        /* --- FRAMED CARD --- */
         .card {
             position: absolute;
             bottom: 20px;
-            left: 15px;
-            width: 320px;
-            height: 220px;
-            background: var(--card-white);
-            /* Paper Texture Effect */
-            background-image: 
-                linear-gradient(90deg, rgba(200,0,0,.02) 50%, transparent 50%),
-                linear-gradient(rgba(200,0,0,.02) 50%, transparent 50%);
-            background-size: 2px 2px;
-            
+            left: 20px;
+            width: 310px;
+            height: 200px;
+            background: #fff;
             z-index: 10;
             opacity: 0;
-            padding: 30px;
+            padding: 8px; 
             box-sizing: border-box;
-            text-align: center;
-            border-radius: 5px; /* Sharper corners look more like real cardstock */
-            
-            /* Bezel effect to simulate paper thickness */
-            border: 1px solid #e0e0e0;
-            border-bottom: 3px solid #d0d0d0; 
-            
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.2), z-index 0s 0.4s;
+            border-radius: 10px;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s 0.4s;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--card-border);
+            border-radius: 6px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background: #fff;
+            /* Subtle card texture */
+            background-image: radial-gradient(circle, #fdfdfd 1px, transparent 1px);
+            background-size: 10px 10px;
         }
 
         /* OPEN STATE */
         .envelope-wrapper.open .envelope::before { transform: rotateX(180deg); z-index: 5; }
         .envelope-wrapper.open .wing { opacity: 1; }
-        .envelope-wrapper.open .wing-left { animation: flap 2.5s infinite ease-in-out; }
-        .envelope-wrapper.open .wing-right { animation: flap-right 2.5s infinite ease-in-out; }
+        .envelope-wrapper.open .wing-left { transform: rotate(-25deg) translateY(-15px); }
+        .envelope-wrapper.open .wing-right { transform: scaleX(-1) rotate(-25deg) translateY(-15px); }
 
         .envelope-wrapper.open .card {
-            /* Slight 2-degree tilt makes it look hand-placed */
-            transform: translateY(-130px) rotate(-2deg); 
+            transform: translateY(-120px) rotate(-1deg); 
             opacity: 1;
             z-index: 100;
-            /* Multi-layered shadow for depth */
-            box-shadow: 
-                0 5px 15px rgba(0,0,0,0.1),
-                0 20px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
         }
 
         #typewriter { 
-            font-size: 1.7em; 
-            color: #444; /* Darker grey looks more like real ink */
+            font-size: 1.55em; 
+            color: #d81b60; 
             line-height: 1.4; 
             font-weight: bold;
-            text-shadow: 0.5px 0.5px 0px rgba(0,0,0,0.1);
+            text-align: center;
+            text-shadow: 0.5px 0.5px 0px rgba(216, 27, 96, 0.2);
         }
         
-        .floating-item { position: absolute; top: -10%; font-size: 20px; animation: fall linear forwards; z-index: 150; }
+        .floating-item { position: absolute; top: -10%; font-size: 20px; animation: fall linear forwards; pointer-events: none; z-index: 150; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
         .instruction { position: absolute; bottom: 8%; color: #d81b60; font-size: 1.5em; animation: pulse 1.5s infinite; }
         @keyframes pulse { 50% { transform: scale(1.1); } }
@@ -147,14 +158,16 @@
         <div class="wing wing-right"></div>
         <div class="envelope">
             <div class="card">
-                <div id="typewriter"></div>
-                <div style="font-size: 30px; margin-top: 15px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));">❤️</div>
+                <div class="card-inner">
+                    <div id="typewriter"></div>
+                    <div style="font-size: 30px; margin-top: 10px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));">❤️</div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const message = "YES! \nI would love to be your Sahelii Moti. \nYou are the best! ❤️";
+        const message = "YES! I would love to be your Sahelii Moti. You are the best!";
         let i = 0; let isOpened = false;
 
         function openEnvelope() {
@@ -170,14 +183,14 @@
             if (i < message.length) {
                 document.getElementById("typewriter").innerHTML += message.charAt(i);
                 i++;
-                setTimeout(typeWriter, 85);
+                setTimeout(typeWriter, 75);
             }
         }
 
         function createFloatingItems() {
             const item = document.createElement('div');
             item.classList.add('floating-item');
-            const types = ['❤️', '✨', '🌸', '💖']; 
+            const types = ['❤️', '✨', '🌸']; 
             item.innerHTML = types[Math.floor(Math.random() * types.length)];
             item.style.left = Math.random() * 100 + 'vw';
             item.style.animationDuration = Math.random() * 3 + 4 + 's';
