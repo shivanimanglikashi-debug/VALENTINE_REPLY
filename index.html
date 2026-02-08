@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For My Sahelii Moti</title>
+    <title>For YOU</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pink-bg: #f9d9d5; /* Soft gradient background color */
-            --env-body: #e68ca3; /* The pink envelope color */
-            --env-flap: #d6718c; /* Slightly darker flap */
-            --card-border: #f2aebc;
+            --bg-top: #c8533d;
+            --bg-bottom: #f2c7bc;
+            --env-pink: #d9859a;
+            --card-border: #f4b4c4;
         }
 
         body {
-            background: radial-gradient(circle, #fce4ec, #f8bbd0);
+            background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,180 +24,186 @@
             font-family: 'Dancing Script', cursive;
         }
 
-        .envelope-wrapper {
+        .container {
             position: relative;
             cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             z-index: 10;
         }
 
-        /* --- REALISTIC FEATHERED WINGS --- */
-        .wing {
+        /* --- FALLING HEARTS --- */
+        .heart-particle {
             position: absolute;
-            width: 280px;
-            height: 180px;
-            top: -50px;
-            opacity: 0;
-            transition: all 1.2s ease-in-out;
+            top: -10%;
+            color: rgba(255, 255, 255, 0.6);
+            user-select: none;
             pointer-events: none;
             z-index: 1;
+            animation: fall linear forwards;
         }
 
-        .wing-left { left: -220px; transform: rotate(-10deg); }
-        .wing-right { right: -220px; transform: scaleX(-1) rotate(-10deg); }
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
 
-        /* Using a SVG-like CSS shape for feathered wings */
-        .wing::before {
-            content: '';
+        /* --- REALISTIC SVG WINGS --- */
+        .wings-container {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center, #ffffff 30%, #f0f0f0 100%);
-            clip-path: polygon(0% 50%, 10% 30%, 25% 15%, 45% 5%, 70% 5%, 90% 15%, 100% 40%, 90% 45%, 95% 60%, 80% 65%, 85% 80%, 65% 85%, 70% 100%, 40% 90%, 20% 75%);
-            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.05);
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+            width: 750px;
+            z-index: 2;
+            opacity: 0;
+            transform: scale(0.6) translateY(20px);
+            transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
         }
 
-        /* --- ENVELOPE BODY --- */
-        .envelope {
+        /* --- ENVELOPE BASE --- */
+        .envelope-base {
             position: relative;
-            width: 280px;
-            height: 180px;
-            background-color: var(--env-body);
-            border-radius: 0 0 10px 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            z-index: 20;
-        }
-
-        /* The Pointed Flap (Triangle) */
-        .envelope::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            width: 0;
-            height: 0;
-            border-left: 140px solid transparent;
-            border-right: 140px solid transparent;
-            border-bottom: 100px solid var(--env-flap); /* Pointing down initially */
-            transform-origin: top;
-            transition: transform 0.6s ease;
-            z-index: 30;
+            width: 240px;
+            height: 160px;
+            background: var(--env-pink);
+            border-radius: 4px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            z-index: 10;
         }
 
         /* --- THE FRAMED CARD --- */
         .card {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
-            width: 260px;
-            height: 160px;
+            width: 230px;
+            height: 150px;
             background: #fff;
-            padding: 8px;
             border-radius: 12px;
-            z-index: 10;
+            padding: 8px;
+            box-sizing: border-box;
+            z-index: 20;
             opacity: 0;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s 0.4s;
+            transform: translateY(0);
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .card-inner {
             width: 100%;
             height: 100%;
-            border: 3px solid var(--card-border);
+            border: 2px solid var(--card-border);
             border-radius: 8px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 15px;
-            box-sizing: border-box;
+            text-align: center;
             background: #fff;
         }
 
-        /* OPEN STATE */
-        .envelope-wrapper.open .envelope::before {
-            transform: rotateX(180deg) translateY(100px); /* Flap flips UP */
-            z-index: 5;
+        /* --- OPEN STATE --- */
+        .container.open .wings-container {
+            opacity: 1;
+            transform: scale(1) translateY(0);
         }
 
-        .envelope-wrapper.open .wing { opacity: 1; }
-        .envelope-wrapper.open .wing-left { transform: rotate(-20deg) translateX(-20px); }
-        .envelope-wrapper.open .wing-right { transform: scaleX(-1) rotate(-20deg) translateX(-20px); }
-
-        .envelope-wrapper.open .card {
-            transform: translateY(-130px); /* Pops up into the center */
+        .container.open .card {
             opacity: 1;
-            z-index: 100;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            transform: translateY(-90px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
         #typewriter {
-            font-size: 1.3em;
-            color: #4a4a4a;
-            text-align: center;
+            font-size: 1.4em;
+            color: #444;
             line-height: 1.4;
             font-weight: bold;
         }
 
-        .floating-heart {
-            position: absolute;
-            color: #d81b60;
-            font-size: 15px;
-            animation: floatUp 4s linear infinite;
-            opacity: 0;
+        .heart-icon {
+            color: #e91e63;
+            font-size: 24px;
+            margin-top: 8px;
+            animation: pulse 1.5s infinite;
         }
 
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0); opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
 <body>
 
-    <div class="envelope-wrapper" onclick="openEnvelope()">
-        <div class="wing wing-left"></div>
-        <div class="wing wing-right"></div>
+    <div class="container" onclick="openSurprise()">
+        <div class="wings-container">
+            <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+                        <feOffset dx="0" dy="4" />
+                        <feComponentTransfer><feFuncA type="linear" slope="0.3"/></feComponentTransfer>
+                        <feMerge>
+                            <feMergeNode />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+                <g filter="url(#softShadow)" fill="white">
+                    <path d="M400,200 Q350,150 200,100 Q150,80 80,150 Q120,170 150,170 Q110,200 140,220 Q160,210 180,210 Q140,240 170,260 Q190,240 210,240 Q180,270 210,290 Q230,260 250,260 Q220,300 250,320 Q280,280 400,200 Z" />
+                    <path d="M400,200 Q450,150 600,100 Q650,80 720,150 Q680,170 650,170 Q690,200 660,220 Q640,210 620,210 Q660,240 630,260 Q610,240 590,240 Q620,270 590,290 Q570,260 550,260 Q580,300 550,320 Q520,280 400,200 Z" />
+                </g>
+            </svg>
+        </div>
+
+        <div class="envelope-base"></div>
         
-        <div class="envelope">
-            <div class="card">
-                <div class="card-inner">
-                    <div id="typewriter"></div>
-                    <div style="color: #e91e63; font-size: 25px; margin-top: 10px;">❤️</div>
-                </div>
+        <div class="card">
+            <div class="card-inner">
+                <div id="typewriter"></div>
+                <div class="heart-icon">❤️</div>
             </div>
         </div>
     </div>
 
     <script>
-        const message = "YES! I would love to be your Sahelii Moti. You are the best!";
+        const message = "YES! I would love to be your Valentine.";
         let i = 0;
         let isOpened = false;
 
-        function openEnvelope() {
+        function openSurprise() {
             if (isOpened) return;
             isOpened = true;
-            document.querySelector('.envelope-wrapper').classList.add('open');
+            document.querySelector('.container').classList.add('open');
             
-            setTimeout(typeWriter, 1000);
-            setInterval(createHeart, 500);
+            setTimeout(typeWriter, 800);
+            // Start hearts when opened
+            setInterval(createFallingHeart, 300);
         }
 
         function typeWriter() {
             if (i < message.length) {
                 document.getElementById("typewriter").innerHTML += message.charAt(i);
                 i++;
-                setTimeout(typeWriter, 70);
+                setTimeout(typeWriter, 65);
             }
         }
 
-        function createHeart() {
+        function createFallingHeart() {
             const heart = document.createElement('div');
-            heart.classList.add('floating-heart');
+            heart.classList.add('heart-particle');
             heart.innerHTML = '❤️';
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.top = '100vh';
-            heart.style.fontSize = (Math.random() * 10 + 10) + 'px';
+            heart.style.fontSize = Math.random() * 15 + 10 + 'px';
+            heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+            heart.style.opacity = Math.random() * 0.5 + 0.2;
             document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 4000);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
         }
     </script>
 </body>
