@@ -24,7 +24,7 @@
             margin: 0;
             overflow: hidden;
             font-family: 'Dancing Script', cursive;
-            perspective: 1200px; /* Enhanced 3D depth */
+            perspective: 1500px;
         }
 
         .container {
@@ -40,67 +40,66 @@
             height: 260px;
             background: var(--env-pink);
             border-radius: 0 0 15px 15px;
-            z-index: 20; /* High z-index to stay above wings */
+            z-index: 20;
             box-shadow: 0 25px 60px rgba(0,0,0,0.3);
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* --- WINGS ANCHORED INTERNALLY TO EDGES --- */
+        /* --- WINGS: STUCK TO EDGES --- */
         .wing-svg {
             position: absolute;
-            top: -10px; /* Slight height offset for natural look */
-            width: 350px; 
-            height: 300px;
-            z-index: -1; /* Place behind envelope body */
+            top: -20px;
+            width: 380px; 
+            height: 320px;
+            z-index: 15; /* Behind the envelope pocket but visible */
             opacity: 0;
             transition: opacity 0.5s ease;
         }
 
         .left-wing {
-            right: 100%; /* Move left until its right edge touches envelope */
-            margin-right: -2px; /* Slight overlap to ensure NO gap */
+            right: 100%; /* Align its right edge to envelope's left edge */
+            margin-right: -8px; /* Force an overlap to hide any gap */
             transform-origin: right center;
         }
 
         .right-wing {
-            left: 100%; /* Move right until its left edge touches envelope */
-            margin-left: -2px; /* Slight overlap to ensure NO gap */
+            left: 100%; /* Align its left edge to envelope's right edge */
+            margin-left: -8px; /* Force an overlap to hide any gap */
             transform-origin: left center;
         }
 
-        /* --- FLAPPING ANIMATIONS --- */
+        /* --- FLAPPING --- */
         .container.open .wing-svg {
             opacity: 1;
         }
 
         .container.open .left-wing {
-            animation: flapL 0.6s ease-in-out infinite alternate 1.2s;
+            animation: flapL 0.5s ease-in-out infinite alternate 1.1s;
         }
 
         .container.open .right-wing {
-            animation: flapR 0.6s ease-in-out infinite alternate 1.2s;
+            animation: flapR 0.5s ease-in-out infinite alternate 1.1s;
         }
 
         @keyframes flapL {
-            from { transform: rotateY(0deg) rotateZ(0deg); }
-            to { transform: rotateY(55deg) rotateZ(-5deg); }
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(70deg); }
         }
 
         @keyframes flapR {
-            from { transform: rotateY(0deg) rotateZ(0deg); }
-            to { transform: rotateY(-55deg) rotateZ(5deg); }
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(-70deg); }
         }
 
-        /* Floating motion for the whole unit */
         .container.open .envelope {
-            animation: drift 3s ease-in-out infinite 1.2s;
+            animation: drift 3s ease-in-out infinite 1s;
         }
 
         @keyframes drift {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-30px); }
+            50% { transform: translateY(-45px); }
         }
 
         /* --- ENVELOPE DECORATION --- */
@@ -111,10 +110,10 @@
             width: 100%; height: 75%;
             background: var(--env-flap);
             clip-path: polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%);
-            z-index: 30; /* Above the card */
+            z-index: 30;
         }
 
-        /* --- ENLARGED TEXTURED CARD --- */
+        /* --- THE CARD --- */
         .card {
             position: absolute;
             width: 390px;
@@ -123,11 +122,11 @@
             border-radius: 12px;
             padding: 15px;
             box-sizing: border-box;
-            z-index: 25; /* Between body and flap */
+            z-index: 25;
             opacity: 0;
             transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             background-image: url("https://www.transparenttextures.com/patterns/felt.png");
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         .container.open .card {
@@ -137,31 +136,36 @@
 
         .card-inner {
             height: 100%;
-            border: 3px solid var(--card-border);
+            border: 4px solid var(--card-border);
             border-radius: 8px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 25px;
             text-align: center;
             background: rgba(255, 255, 255, 0.7);
         }
 
         #typewriter {
-            font-size: 1.45rem;
-            color: #333;
-            line-height: 1.5;
+            font-size: 1.4rem;
+            color: #222;
+            line-height: 1.4;
             font-weight: bold;
         }
 
+        /* --- BURSTING HEARTS --- */
         .heart-particle {
             position: absolute;
-            top: -10%;
-            animation: fall linear forwards;
+            pointer-events: none;
             z-index: 100;
+            animation: burstOut 2s ease-out forwards;
         }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        @keyframes burstOut {
+            0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.2); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -171,12 +175,10 @@
         <div class="envelope">
             <svg class="wing-svg left-wing" viewBox="0 0 400 500">
                 <path d="M400,350 L400,300 C350,250 280,150 150,120 C100,80 20,100 10,180 C0,250 50,280 100,300 C40,300 10,330 20,380 C30,430 80,450 130,450 C80,470 70,520 120,550 C180,580 300,530 400,350 Z" fill="white" stroke="black" stroke-width="2.5"/>
-                <path d="M380,330 Q250,250 100,200" fill="none" stroke="black" stroke-opacity="0.15"/>
             </svg>
 
             <svg class="wing-svg right-wing" viewBox="0 0 400 500">
                 <path d="M0,350 L0,300 C50,250 120,150 250,120 C300,80 380,100 390,180 C400,250 350,280 300,300 C360,300 390,330 380,380 C370,430 320,450 270,450 C320,470 330,520 280,550 C220,580 100,530 0,350 Z" fill="white" stroke="black" stroke-width="2.5"/>
-                <path d="M20,330 Q150,250 300,200" fill="none" stroke="black" stroke-opacity="0.15"/>
             </svg>
 
             <div class="card">
@@ -198,29 +200,38 @@
             if (isOpened) return;
             isOpened = true;
             document.querySelector('.container').classList.add('open');
-            setTimeout(typeWriter, 1200);
-            setInterval(createHeart, 250);
+            
+            // Heart Burst Logic
+            for(let j=0; j<15; j++) {
+                createHeart();
+            }
+            setInterval(createHeart, 450);
+            
+            setTimeout(typeWriter, 1100);
         }
 
         function typeWriter() {
             if (i < message.length) {
                 document.getElementById("typewriter").innerHTML += message.charAt(i);
                 i++;
-                setTimeout(typeWriter, 40);
+                setTimeout(typeWriter, 45);
             }
         }
 
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart-particle');
-            const colors = ['#ffffff', '#ffb7c5', '#e91e63', '#4fc3f7', '#ffd54f'];
             heart.innerHTML = '❤️';
+            const colors = ['#ffffff', '#ffb7c5', '#e91e63', '#4fc3f7', '#ffd54f'];
             heart.style.color = colors[Math.floor(Math.random() * colors.length)];
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
-            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
+            
+            const tx = (Math.random() - 0.5) * 600 + 'px';
+            const ty = (Math.random() - 1) * 500 + 'px';
+            heart.style.setProperty('--tx', tx);
+            heart.style.setProperty('--ty', ty);
+
+            document.querySelector('.container').appendChild(heart);
+            setTimeout(() => heart.remove(), 2000);
         }
     </script>
 </body>
