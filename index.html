@@ -26,6 +26,14 @@
             font-family: 'Dancing Script', cursive;
         }
 
+        /* Floating Items (Feathers, Hearts) */
+        .floating-item {
+            position: absolute; top: -10%; font-size: 20px;
+            animation: fall linear forwards; pointer-events: none;
+            z-index: 1;
+        }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
         /* Envelope Wrapper */
         .envelope-wrapper {
             position: relative;
@@ -43,7 +51,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        /* Random Scattered Bows */
+        /* Red Bows Styling */
         .mini-bow {
             position: absolute;
             width: 20px;
@@ -64,6 +72,7 @@
         .mini-bow::before { left: -5px; transform: rotate(-45deg); }
         .mini-bow::after { right: -5px; transform: rotate(45deg); }
 
+        /* Envelope Flap */
         .envelope::before {
             content: '';
             position: absolute;
@@ -94,23 +103,34 @@
             border: 1px solid #ffc1cc;
         }
 
-        /* Angel Panda Container */
-        .panda-container {
+        /* Dancing Couple (Giphy Sticker) */
+        .couple-container {
             position: absolute;
-            bottom: -30px;
+            bottom: -20px;
             left: -140px;
-            width: 150px;
+            width: 180px;
             z-index: 15;
             display: none;
-            animation: floatDance 2s infinite alternate ease-in-out;
+            animation: bounceDance 1.5s infinite alternate ease-in-out;
+        }
+        @keyframes bounceDance {
+            0% { transform: scale(1) rotate(-5deg); }
+            100% { transform: scale(1.05) rotate(5deg); }
         }
 
-        @keyframes floatDance {
-            0% { transform: translateY(0) rotate(-5deg); }
-            100% { transform: translateY(-20px) rotate(5deg); }
+        /* Angel Wings for the Side of Envelope */
+        .wing {
+            position: absolute;
+            width: 80px;
+            top: 50px;
+            z-index: 0;
+            opacity: 0.8;
+            display: none;
         }
+        .wing-left { left: -60px; transform: scaleX(-1); }
+        .wing-right { right: -60px; }
 
-        /* Envelope Open State */
+        /* Opening Logic */
         .envelope-wrapper.open .envelope::before { transform: rotateX(180deg); z-index: 0; }
         .envelope-wrapper.open .card {
             transform: translateY(-230px);
@@ -118,16 +138,10 @@
             opacity: 1;
             z-index: 5;
         }
-        .envelope-wrapper.open .panda-container { display: block; }
+        .envelope-wrapper.open .couple-container, 
+        .envelope-wrapper.open .wing { display: block; }
 
         #typewriter { font-size: 1.8em; color: #d81b60; line-height: 1.4; }
-
-        /* Floating Feathers & Hearts */
-        .floating-item {
-            position: absolute; top: -10%; font-size: 20px;
-            animation: fall linear forwards; pointer-events: none;
-        }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
         .instruction { position: absolute; bottom: 8%; color: #d81b60; font-size: 1.5em; animation: pulse 1.5s infinite; }
         @keyframes pulse { 50% { transform: scale(1.1); } }
@@ -139,13 +153,16 @@
 
     <div class="envelope-wrapper" onclick="openEnvelope()">
         <div class="mini-bow" style="top: 20px; left: 40px; transform: rotate(-15deg);"></div>
-        <div class="mini-bow" style="top: 140px; right: 30px; transform: rotate(20deg);"></div>
-        <div class="mini-bow" style="bottom: 40px; left: 80px; transform: rotate(-10deg);"></div>
-        <div class="mini-bow" style="top: 80px; right: 100px; transform: rotate(15deg);"></div>
-        <div class="mini-bow" style="bottom: 20px; right: 50px; transform: rotate(-25deg);"></div>
+        <div class="mini-bow" style="top: 150px; right: 40px; transform: rotate(20deg);"></div>
+        <div class="mini-bow" style="bottom: 30px; left: 100px; transform: rotate(-10deg);"></div>
+        <div class="mini-bow" style="top: 90px; right: 120px; transform: rotate(15deg);"></div>
+        <div class="mini-bow" style="bottom: 50px; right: 10px; transform: rotate(-25deg);"></div>
 
-        <div class="panda-container">
-            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMml3ZGFiaHV4Z285eWZ3OHBqbjF6Z2dzZ3R0Z2ZhcjV6Z2dzZ3R0ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/X8yP6i8Y00z9530lT3/giphy.gif" style="width:100%; filter: drop-shadow(0 0 5px white);" alt="Angel Panda">
+        <img src="https://cdn-icons-png.flaticon.com/512/5405/5405904.png" class="wing wing-left">
+        <img src="https://cdn-icons-png.flaticon.com/512/5405/5405904.png" class="wing wing-right">
+
+        <div class="couple-container">
+            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZudGpsZGl2NGR5bms4YXFwdHh6MGx2OGFkNjE4czF4bW5ibzN0eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/iO6mxvO9S7zW1I4Xn3/giphy.gif" style="width:100%;" alt="Dancing Couple">
         </div>
 
         <div class="envelope">
@@ -157,7 +174,7 @@
     </div>
 
     <audio id="bgMusic" loop>
-        <source src="https://www.mboxdrive.com/Perfect%20Instrumental.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/audio/2022/10/14/audio_9939f04533.mp3" type="audio/mpeg">
     </audio>
 
     <script>
@@ -171,7 +188,10 @@
 
             document.querySelector('.envelope-wrapper').classList.add('open');
             document.getElementById('clickText').style.display = 'none';
-            document.getElementById('bgMusic').play();
+            
+            // Playing the music
+            const music = document.getElementById('bgMusic');
+            music.play();
 
             setTimeout(typeWriter, 1200);
             setInterval(createFloatingItems, 300);
@@ -188,11 +208,10 @@
         function createFloatingItems() {
             const item = document.createElement('div');
             item.classList.add('floating-item');
-            const types = ['❤️', '🪶', '🌸', '💖', '🐼', '🎀']; // Includes Feathers (🪶)
+            const types = ['❤️', '🪶', '🌸', '💖', '🎀']; 
             item.innerHTML = types[Math.floor(Math.random() * types.length)];
             item.style.left = Math.random() * 100 + 'vw';
             item.style.animationDuration = Math.random() * 3 + 4 + 's';
-            item.style.opacity = Math.random();
             document.body.appendChild(item);
             setTimeout(() => { item.remove(); }, 7000);
         }
