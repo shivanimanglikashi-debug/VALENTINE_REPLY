@@ -24,86 +24,84 @@
             margin: 0;
             overflow: hidden;
             font-family: 'Dancing Script', cursive;
-            perspective: 1200px; /* Enhanced 3D depth */
         }
 
         .container {
             position: relative;
             cursor: pointer;
-            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
         }
 
-        /* --- ENVELOPE BODY --- */
+        /* --- THE UNIFIED WING SYSTEM --- */
+        .wings-container {
+            position: absolute;
+            width: 1000px; /* Full span */
+            height: 400px;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .wing {
+            width: 300px;
+            height: 300px;
+            fill: white;
+            stroke: #333;
+            stroke-width: 2;
+        }
+
+        .left-wing {
+            transform-origin: right center;
+            /* No margin/gap - absolute placement */
+            margin-right: 210px; /* Half of envelope width (420/2) */
+        }
+
+        .right-wing {
+            transform-origin: left center;
+            margin-left: 210px; /* Half of envelope width (420/2) */
+        }
+
+        /* --- ANIMATIONS --- */
+        .container.open .wings-container {
+            opacity: 1;
+        }
+
+        .container.open .left-wing {
+            animation: flapL 0.6s ease-in-out infinite alternate 1s;
+        }
+
+        .container.open .right-wing {
+            animation: flapR 0.6s ease-in-out infinite alternate 1s;
+        }
+
+        @keyframes flapL {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(60deg); }
+        }
+
+        @keyframes flapR {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(-60deg); }
+        }
+
+        /* --- ENVELOPE --- */
         .envelope {
             position: relative;
             width: 420px;
             height: 260px;
             background: var(--env-pink);
             border-radius: 0 0 15px 15px;
-            z-index: 20; /* High z-index to stay above wings */
-            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            z-index: 20;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
         }
 
-        /* --- WINGS ANCHORED INTERNALLY TO EDGES --- */
-        .wing-svg {
-            position: absolute;
-            top: -10px; /* Slight height offset for natural look */
-            width: 350px; 
-            height: 300px;
-            z-index: -1; /* Place behind envelope body */
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .left-wing {
-            right: 100%; /* Move left until its right edge touches envelope */
-            margin-right: -2px; /* Slight overlap to ensure NO gap */
-            transform-origin: right center;
-        }
-
-        .right-wing {
-            left: 100%; /* Move right until its left edge touches envelope */
-            margin-left: -2px; /* Slight overlap to ensure NO gap */
-            transform-origin: left center;
-        }
-
-        /* --- FLAPPING ANIMATIONS --- */
-        .container.open .wing-svg {
-            opacity: 1;
-        }
-
-        .container.open .left-wing {
-            animation: flapL 0.6s ease-in-out infinite alternate 1.2s;
-        }
-
-        .container.open .right-wing {
-            animation: flapR 0.6s ease-in-out infinite alternate 1.2s;
-        }
-
-        @keyframes flapL {
-            from { transform: rotateY(0deg) rotateZ(0deg); }
-            to { transform: rotateY(55deg) rotateZ(-5deg); }
-        }
-
-        @keyframes flapR {
-            from { transform: rotateY(0deg) rotateZ(0deg); }
-            to { transform: rotateY(-55deg) rotateZ(5deg); }
-        }
-
-        /* Floating motion for the whole unit */
-        .container.open .envelope {
-            animation: drift 3s ease-in-out infinite 1.2s;
-        }
-
-        @keyframes drift {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-30px); }
-        }
-
-        /* --- ENVELOPE DECORATION --- */
         .envelope::before {
             content: '';
             position: absolute;
@@ -111,28 +109,30 @@
             width: 100%; height: 75%;
             background: var(--env-flap);
             clip-path: polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%);
-            z-index: 30; /* Above the card */
+            z-index: 30;
         }
 
-        /* --- ENLARGED TEXTURED CARD --- */
+        /* --- CARD --- */
         .card {
             position: absolute;
             width: 390px;
-            height: 350px;
+            height: 340px;
+            left: 15px;
+            bottom: 10px;
             background: var(--paper-texture);
             border-radius: 12px;
-            padding: 15px;
+            padding: 20px;
             box-sizing: border-box;
-            z-index: 25; /* Between body and flap */
+            z-index: 10;
             opacity: 0;
             transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             background-image: url("https://www.transparenttextures.com/patterns/felt.png");
         }
 
         .container.open .card {
             opacity: 1;
-            transform: translateY(-310px);
+            transform: translateY(-300px);
+            z-index: 100;
         }
 
         .card-inner {
@@ -143,47 +143,48 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.6);
         }
 
         #typewriter {
-            font-size: 1.45rem;
-            color: #333;
-            line-height: 1.5;
+            font-size: 1.4rem;
+            color: #222;
             font-weight: bold;
+            text-align: center;
+            padding: 0 10px;
         }
 
         .heart-particle {
             position: absolute;
-            top: -10%;
-            animation: fall linear forwards;
-            z-index: 100;
+            z-index: 150;
+            animation: burst 2s ease-out forwards;
         }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        @keyframes burst {
+            0% { transform: translate(0, 0) scale(0); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
+        }
     </style>
 </head>
 <body>
 
     <div class="container" onclick="openSurprise()">
         
+        <div class="wings-container">
+            <svg class="wing left-wing" viewBox="0 0 200 200">
+                <path d="M200,150 C180,100 120,20 50,50 C0,70 -20,130 30,160 C10,160 -10,190 20,220 C40,240 80,230 110,210 C90,230 100,260 140,260 C180,260 200,200 200,150 Z" />
+            </svg>
+            <svg class="wing right-wing" viewBox="0 0 200 200">
+                <path d="M0,150 C20,100 80,20 150,50 C200,70 220,130 170,160 C190,160 210,190 180,220 C160,240 120,230 90,210 C110,230 100,260 60,260 C20,260 0,200 0,150 Z" />
+            </svg>
+        </div>
+
         <div class="envelope">
-            <svg class="wing-svg left-wing" viewBox="0 0 400 500">
-                <path d="M400,350 L400,300 C350,250 280,150 150,120 C100,80 20,100 10,180 C0,250 50,280 100,300 C40,300 10,330 20,380 C30,430 80,450 130,450 C80,470 70,520 120,550 C180,580 300,530 400,350 Z" fill="white" stroke="black" stroke-width="2.5"/>
-                <path d="M380,330 Q250,250 100,200" fill="none" stroke="black" stroke-opacity="0.15"/>
-            </svg>
-
-            <svg class="wing-svg right-wing" viewBox="0 0 400 500">
-                <path d="M0,350 L0,300 C50,250 120,150 250,120 C300,80 380,100 390,180 C400,250 350,280 300,300 C360,300 390,330 380,380 C370,430 320,450 270,450 C320,470 330,520 280,550 C220,580 100,530 0,350 Z" fill="white" stroke="black" stroke-width="2.5"/>
-                <path d="M20,330 Q150,250 300,200" fill="none" stroke="black" stroke-opacity="0.15"/>
-            </svg>
-
             <div class="card">
                 <div class="card-inner">
-                    <h2 style="margin:0 0 10px 0; font-size: 2.6rem;">For You</h2>
+                    <h2 style="margin:0 0 10px 0; font-size: 2.2rem;">For You</h2>
                     <div id="typewriter"></div>
-                    <div style="margin-top:15px; font-size: 35px;">❤️</div>
+                    <div style="margin-top:10px; font-size: 30px;">❤️</div>
                 </div>
             </div>
         </div>
@@ -198,8 +199,10 @@
             if (isOpened) return;
             isOpened = true;
             document.querySelector('.container').classList.add('open');
-            setTimeout(typeWriter, 1200);
-            setInterval(createHeart, 250);
+            
+            for(let j=0; j<15; j++) createHeart();
+            setInterval(createHeart, 400);
+            setTimeout(typeWriter, 1100);
         }
 
         function typeWriter() {
@@ -212,15 +215,14 @@
 
         function createHeart() {
             const heart = document.createElement('div');
-            heart.classList.add('heart-particle');
-            const colors = ['#ffffff', '#ffb7c5', '#e91e63', '#4fc3f7', '#ffd54f'];
+            heart.className = 'heart-particle';
             heart.innerHTML = '❤️';
-            heart.style.color = colors[Math.floor(Math.random() * colors.length)];
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
-            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
+            const tx = (Math.random() - 0.5) * 600 + 'px';
+            const ty = (Math.random() - 1) * 500 + 'px';
+            heart.style.setProperty('--tx', tx);
+            heart.style.setProperty('--ty', ty);
+            document.querySelector('.container').appendChild(heart);
+            setTimeout(() => heart.remove(), 2000);
         }
     </script>
 </body>
