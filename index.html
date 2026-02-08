@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flying Valentine</title>
+    <title>A Special Surprise!</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-top: #d35d47;
-            --bg-bottom: #f4c2b5;
-            --env-pink: #d9859a;
-            --env-flap: #e29fb0;
-            --card-border: #d4a5b1;
-            --paper-texture: radial-gradient(circle, #ffffff 0%, #f9f4f0 100%);
+            --pink-bg: #ffeef2;
+            --envelope-color: #f06292;
+            --flap-color: #f48fb1;
         }
 
         body {
-            background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            background-color: var(--pink-bg);
+            background-image: radial-gradient(#ffc1cc 2px, transparent 2px);
+            background-size: 30px 30px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -26,203 +25,168 @@
             font-family: 'Dancing Script', cursive;
         }
 
-        .container {
+        .envelope-wrapper {
             position: relative;
             cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 1000px;
+            z-index: 10;
         }
 
-        /* --- THE UNIFIED WING SYSTEM --- */
-        .wings-container {
-            position: absolute;
-            width: 1000px; /* Full span */
-            height: 400px;
-            z-index: 5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-
+        /* --- REALISTIC FEATHERED WINGS --- */
         .wing {
-            width: 300px;
-            height: 300px;
-            fill: white;
-            stroke: #333;
-            stroke-width: 2;
+            position: absolute;
+            width: 170px;
+            height: 100px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            top: 10px;
+            z-index: 5;
+            opacity: 0;
+            transition: all 0.9s ease-in-out;
+            border-radius: 0% 100% 40% 60% / 0% 100% 20% 80%;
+            box-shadow: 
+                -5px 10px 20px rgba(0,0,0,0.1),
+                inset 10px -10px 20px rgba(255,255,255,1);
+        }
+        
+        .wing-left { 
+            left: -140px; 
+            transform: rotate(-10deg) skewY(-5deg);
+        }
+        
+        .wing-right { 
+            right: -140px; 
+            transform: scaleX(-1) rotate(-10deg) skewY(-5deg); 
         }
 
-        .left-wing {
-            transform-origin: right center;
-            /* No margin/gap - absolute placement */
-            margin-right: 210px; /* Half of envelope width (420/2) */
+        /* Gentle Flap Animation */
+        @keyframes flap {
+            0%, 100% { transform: rotate(-10deg) skewY(-5deg); }
+            50% { transform: rotate(-20deg) translateY(-10px) skewY(-8deg); }
+        }
+        @keyframes flap-right {
+            0%, 100% { transform: scaleX(-1) rotate(-10deg) skewY(-5deg); }
+            50% { transform: scaleX(-1) rotate(-20deg) translateY(-10px) skewY(-8deg); }
         }
 
-        .right-wing {
-            transform-origin: left center;
-            margin-left: 210px; /* Half of envelope width (420/2) */
-        }
-
-        /* --- ANIMATIONS --- */
-        .container.open .wings-container {
-            opacity: 1;
-        }
-
-        .container.open .left-wing {
-            animation: flapL 0.6s ease-in-out infinite alternate 1s;
-        }
-
-        .container.open .right-wing {
-            animation: flapR 0.6s ease-in-out infinite alternate 1s;
-        }
-
-        @keyframes flapL {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(60deg); }
-        }
-
-        @keyframes flapR {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(-60deg); }
-        }
-
-        /* --- ENVELOPE --- */
         .envelope {
             position: relative;
-            width: 420px;
-            height: 260px;
-            background: var(--env-pink);
-            border-radius: 0 0 15px 15px;
+            width: 350px;
+            height: 230px;
+            background: var(--envelope-color);
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             z-index: 20;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
         }
 
+        /* Envelope Flap */
         .envelope::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 75%;
-            background: var(--env-flap);
-            clip-path: polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%);
-            z-index: 30;
+            content: ''; position: absolute; top: 0; z-index: 30;
+            border-top: 130px solid var(--flap-color);
+            border-left: 175px solid transparent; border-right: 175px solid transparent;
+            transform-origin: top; transition: transform 0.6s ease;
         }
 
-        /* --- CARD --- */
+        /* --- THE CARD --- */
         .card {
             position: absolute;
-            width: 390px;
-            height: 340px;
+            bottom: 15px;
             left: 15px;
-            bottom: 10px;
-            background: var(--paper-texture);
-            border-radius: 12px;
-            padding: 20px;
-            box-sizing: border-box;
+            width: 320px;
+            height: 200px;
+            background: #fff;
             z-index: 10;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s 0.4s;
+            padding: 25px;
+            box-sizing: border-box;
+            text-align: center;
+            border-radius: 12px;
             opacity: 0;
-            transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s;
-            background-image: url("https://www.transparenttextures.com/patterns/felt.png");
-        }
-
-        .container.open .card {
-            opacity: 1;
-            transform: translateY(-300px);
-            z-index: 100;
-        }
-
-        .card-inner {
-            height: 100%;
-            border: 3px solid var(--card-border);
-            border-radius: 8px;
+            border: 2px solid #ffc1cc;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.6);
         }
 
-        #typewriter {
-            font-size: 1.4rem;
-            color: #222;
-            font-weight: bold;
-            text-align: center;
-            padding: 0 10px;
+        /* --- OPEN STATE --- */
+        .envelope-wrapper.open .envelope::before { 
+            transform: rotateX(180deg); 
+            z-index: 5; /* Flap goes behind card */
         }
 
-        .heart-particle {
-            position: absolute;
-            z-index: 150;
-            animation: burst 2s ease-out forwards;
+        .envelope-wrapper.open .wing { opacity: 1; }
+        .envelope-wrapper.open .wing-left { animation: flap 2.5s infinite ease-in-out; }
+        .envelope-wrapper.open .wing-right { animation: flap-right 2.5s infinite ease-in-out; }
+
+        .envelope-wrapper.open .card {
+            transform: translateY(-120px); 
+            opacity: 1;
+            z-index: 100; /* Card sits in front of everything */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
-        @keyframes burst {
-            0% { transform: translate(0, 0) scale(0); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
+        #typewriter { font-size: 1.7em; color: #d81b60; line-height: 1.4; font-weight: bold; }
+        
+        .floating-item { 
+            position: absolute; top: -10%; font-size: 20px; 
+            animation: fall linear forwards; pointer-events: none; z-index: 150; 
         }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+        
+        .instruction { 
+            position: absolute; bottom: 8%; color: #d81b60; font-size: 1.5em; 
+            animation: pulse 1.5s infinite; 
+        }
+        @keyframes pulse { 50% { transform: scale(1.1); } }
     </style>
 </head>
 <body>
 
-    <div class="container" onclick="openSurprise()">
-        
-        <div class="wings-container">
-            <svg class="wing left-wing" viewBox="0 0 200 200">
-                <path d="M200,150 C180,100 120,20 50,50 C0,70 -20,130 30,160 C10,160 -10,190 20,220 C40,240 80,230 110,210 C90,230 100,260 140,260 C180,260 200,200 200,150 Z" />
-            </svg>
-            <svg class="wing right-wing" viewBox="0 0 200 200">
-                <path d="M0,150 C20,100 80,20 150,50 C200,70 220,130 170,160 C190,160 210,190 180,220 C160,240 120,230 90,210 C110,230 100,260 60,260 C20,260 0,200 0,150 Z" />
-            </svg>
-        </div>
+    <div class="instruction" id="clickText">Click to open your message...</div>
+
+    <div class="envelope-wrapper" onclick="openEnvelope()">
+        <div class="wing wing-left"></div>
+        <div class="wing wing-right"></div>
 
         <div class="envelope">
             <div class="card">
-                <div class="card-inner">
-                    <h2 style="margin:0 0 10px 0; font-size: 2.2rem;">For You</h2>
-                    <div id="typewriter"></div>
-                    <div style="margin-top:10px; font-size: 30px;">❤️</div>
-                </div>
+                <div id="typewriter"></div>
+                <div style="font-size: 35px; margin-top: 15px;">❤️</div>
             </div>
         </div>
     </div>
 
     <script>
-        const message = "Yes! I'll be your valentine. Believe me you're my world as of now. I cannot imagine my life without you. You're still my favourite morning face with those sleepy eyes.";
-        let i = 0;
-        let isOpened = false;
+        const message = "YES! \nI would love to be your Sahelii Moti. \nYou are the best! ❤️";
+        let i = 0; let isOpened = false;
 
-        function openSurprise() {
+        function openEnvelope() {
             if (isOpened) return;
             isOpened = true;
-            document.querySelector('.container').classList.add('open');
             
-            for(let j=0; j<15; j++) createHeart();
-            setInterval(createHeart, 400);
-            setTimeout(typeWriter, 1100);
+            document.querySelector('.envelope-wrapper').classList.add('open');
+            document.getElementById('clickText').style.display = 'none';
+
+            setTimeout(typeWriter, 1000);
+            setInterval(createFloatingItems, 300);
         }
 
         function typeWriter() {
             if (i < message.length) {
                 document.getElementById("typewriter").innerHTML += message.charAt(i);
                 i++;
-                setTimeout(typeWriter, 40);
+                setTimeout(typeWriter, 85);
             }
         }
 
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'heart-particle';
-            heart.innerHTML = '❤️';
-            const tx = (Math.random() - 0.5) * 600 + 'px';
-            const ty = (Math.random() - 1) * 500 + 'px';
-            heart.style.setProperty('--tx', tx);
-            heart.style.setProperty('--ty', ty);
-            document.querySelector('.container').appendChild(heart);
-            setTimeout(() => heart.remove(), 2000);
+        function createFloatingItems() {
+            const item = document.createElement('div');
+            item.classList.add('floating-item');
+            const types = ['❤️', '✨', '🌸', '💖']; 
+            item.innerHTML = types[Math.floor(Math.random() * types.length)];
+            item.style.left = Math.random() * 100 + 'vw';
+            item.style.animationDuration = Math.random() * 3 + 4 + 's';
+            document.body.appendChild(item);
+            setTimeout(() => { item.remove(); }, 7000);
         }
     </script>
 </body>
