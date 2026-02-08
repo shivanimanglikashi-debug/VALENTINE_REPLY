@@ -46,69 +46,49 @@
             z-index: 10;
         }
 
-        /* --- CSS WINGS --- */
-        .wings-wrapper {
+        /* --- SVG WINGS --- */
+        .wings-container {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
+            width: 800px; /* Wide enough to spread out */
+            height: 200px;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: space-between;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 0.8s ease;
+            transition: opacity 1s ease;
+            z-index: 5; /* Behind envelope, but visible */
         }
 
-        .container.open .wings-wrapper {
+        .container.open .wings-container {
             opacity: 1;
         }
 
-        .wing {
-            position: absolute;
-            width: 180px;
-            height: 120px;
-            background: white;
-            border-radius: 10% 100% 10% 100%;
-            box-shadow: -5px 5px 15px rgba(0,0,0,0.1);
-            top: -50px;
+        .wing-svg {
+            width: 300px;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.5));
         }
 
-        /* Decorative feathers using pseudo-elements */
-        .wing::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: white;
-            border-radius: 10% 100% 10% 100%;
-            top: 20px;
-            left: -10px;
-            box-shadow: -5px 5px 10px rgba(0,0,0,0.05);
-        }
-
-        .wing.left {
-            right: 80%;
-            transform-origin: right center;
+        .wing-left {
             animation: flapLeft 2s ease-in-out infinite;
+            transform-origin: right center;
         }
 
-        .wing.right {
-            left: 80%;
-            transform: scaleX(-1);
-            transform-origin: left center;
+        .wing-right {
             animation: flapRight 2s ease-in-out infinite;
+            transform-origin: left center;
         }
 
         @keyframes flapLeft {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(-15deg) translateY(-15px); }
+            0%, 100% { transform: rotate(0deg) translateX(20px); }
+            50% { transform: rotate(-10deg) translateX(0px) translateY(-10px); }
         }
 
         @keyframes flapRight {
-            0%, 100% { transform: scaleX(-1) rotate(0deg); }
-            50% { transform: scaleX(-1) rotate(-15deg) translateY(-15px); }
+            0%, 100% { transform: rotate(0deg) translateX(-20px); }
+            50% { transform: rotate(10deg) translateX(0px) translateY(-10px); }
         }
 
         /* --- ENVELOPE --- */
@@ -162,7 +142,7 @@
 
         .card-header {
             font-family: 'Dancing Script', cursive;
-            font-size: 2rem;
+            font-size: 2.2rem;
             margin-bottom: 10px;
             color: var(--text-dark);
         }
@@ -185,7 +165,6 @@
             margin-top: 30px;
             color: white;
             font-size: 1.5rem;
-            opacity: 0.9;
             transition: opacity 0.3s;
         }
 
@@ -203,10 +182,23 @@
             transition: 0.5s;
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
+            .wings-container { width: 100%; }
+            .wing-svg { width: 150px; }
             .envelope { width: 280px; height: 180px; }
             .card { width: 250px; height: 260px; left: 15px; }
-            .wing { width: 120px; height: 80px; }
             .container.open .card { transform: translateY(-200px); }
         }
     </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <h1 class="title">For You</h1>
+
+        <div class="container" id="mainContainer" onclick="openSurprise()">
+            <div class="wings-container">
+                <div class="wing-left">
+                    <svg class="wing-svg" viewBox="0 0 250 150">
+                        <path d="M250,150 C200,150 150,120 100,120 C50,120 0,80 0,40 C0,10 40,0 80,0 C120,0 150,30 180,60 C210,90 250,120 250,150 Z" fill="white" />
+                        <path d="M230,130 C190,130 160,110 120,110 C80,110 40,80 40,50 C40,3
