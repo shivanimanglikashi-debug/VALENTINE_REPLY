@@ -7,7 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-grad: linear-gradient(180deg, #d35d47 0%, #f4c2b5 100%);
+            /* Animated sky background */
+            --bg-top: #d35d47;
+            --bg-bottom: #f4c2b5;
             --env-pink: #d9859a;
             --env-flap: #e29fb0;
             --card-border: #d4a5b1;
@@ -15,7 +17,9 @@
         }
 
         body {
-            background: var(--bg-grad);
+            background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            background-size: 100% 200%;
+            animation: skyDrift 10s ease-in-out infinite alternate;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,6 +27,25 @@
             margin: 0;
             overflow: hidden;
             font-family: 'Dancing Script', cursive;
+        }
+
+        @keyframes skyDrift {
+            from { background-position: 0% 0%; }
+            to { background-position: 0% 100%; }
+        }
+
+        /* Subtle floating clouds in background */
+        body::before {
+            content: "☁";
+            position: absolute;
+            font-size: 100px;
+            color: rgba(255,255,255,0.2);
+            top: 20%; left: -10%;
+            animation: cloudMove 25s linear infinite;
+        }
+
+        @keyframes cloudMove {
+            to { transform: translateX(120vw); }
         }
 
         .container {
@@ -34,19 +57,39 @@
             z-index: 10;
         }
 
-        /* --- WINGS (ATTACHED TO ENVELOPE) --- */
+        /* --- WINGS ATTACHED TO SIDES --- */
         .wings-svg {
             position: absolute;
-            width: 800px;
+            width: 950px;
             height: 500px;
-            z-index: 1; /* Behind the flap, attached to envelope body */
+            z-index: 5;
             opacity: 0;
-            /* Anchored to the center of the envelope */
-            transform: scale(0.2) translateY(50px);
-            transition: all 1.6s cubic-bezier(0.19, 1, 0.22, 1);
+            transform: scale(0.2);
+            transition: all 1.4s cubic-bezier(0.19, 1, 0.22, 1);
             filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) drop-shadow(0 10px 20px rgba(0,0,0,0.2));
             pointer-events: none;
         }
+
+        .container.open .wings-svg {
+            opacity: 1;
+            transform: scale(1) translateY(-40px);
+            animation: envelopeHover 4s ease-in-out infinite 1.4s;
+        }
+
+        @keyframes envelopeHover {
+            0%, 100% { transform: scale(1) translateY(-40px); }
+            50% { transform: scale(1) translateY(-70px); }
+        }
+
+        /* Pivot points for realistic flapping */
+        #left-wing { transform-origin: 480px 400px; }
+        #right-wing { transform-origin: 520px 400px; }
+
+        .container.open #left-wing { animation: flapL 0.8s ease-in-out infinite alternate 1.4s; }
+        .container.open #right-wing { animation: flapR 0.8s ease-in-out infinite alternate 1.4s; }
+
+        @keyframes flapL { from { transform: rotate(0deg); } to { transform: rotate(12deg); } }
+        @keyframes flapR { from { transform: rotate(0deg); } to { transform: rotate(-12deg); } }
 
         /* --- ENVELOPE --- */
         .envelope {
@@ -69,19 +112,19 @@
             width: 100%; height: 75%;
             background: var(--env-flap);
             clip-path: polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%);
-            z-index: 12; /* Keeps the pocket looking deep */
+            z-index: 12;
         }
 
-        /* --- CARD WITH PAPER TEXTURE --- */
+        /* --- TEXTURED CARD --- */
         .card {
             position: absolute;
             width: 380px;
-            height: 340px;
+            height: 350px;
             background: var(--paper-texture);
             border-radius: 15px;
             padding: 15px;
             box-sizing: border-box;
-            z-index: 5;
+            z-index: 6;
             opacity: 0;
             display: flex;
             transform: translateY(0);
@@ -104,15 +147,9 @@
             box-sizing: border-box;
         }
 
-        /* --- OPEN STATE --- */
-        .container.open .wings-svg {
-            opacity: 1;
-            transform: scale(1) translateY(-100px); /* Wings fly out from envelope */
-        }
-
         .container.open .card {
             opacity: 1;
-            transform: translateY(-260px);
+            transform: translateY(-290px);
             z-index: 100;
         }
 
@@ -138,17 +175,21 @@
     <div class="container" onclick="openSurprise()">
         <svg class="wings-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
             <g stroke="black" stroke-width="1.8" fill="white" stroke-linejoin="round">
-                <path d="M500,400 C480,350 420,250 300,180 C250,150 150,130 100,180 C80,210 70,250 100,290 C60,280 40,310 50,350 C60,390 90,410 130,410 C80,420 70,470 120,510 C160,540 220,530 280,490 C240,520 250,570 320,580 C400,590 480,500 500,400 Z" />
-                <path d="M500,400 C520,350 580,250 700,180 C750,150 850,130 900,180 C920,210 930,250 900,290 C940,280 960,310 950,350 C940,390 910,410 870,410 C920,420 930,470 880,510 C840,540 780,530 720,490 C760,520 750,570 680,580 C600,590 520,500 500,400 Z" />
-                <g stroke-opacity="0.3" fill="none" stroke-width="1.2">
-                    <path d="M450,380 Q320,280 120,220" /><path d="M460,420 Q320,420 120,400" /><path d="M470,460 Q400,520 280,550" />
-                    <path d="M550,380 Q680,280 880,220" /><path d="M540,420 Q680,420 880,400" /><path d="M530,460 Q600,520 720,550" />
+                <g id="left-wing">
+                    <path d="M480,400 C450,350 380,250 250,180 C200,150 100,130 50,180 C30,210 20,250 50,290 C10,280 -10,310 0,350 C10,390 40,410 80,410 C30,420 20,470 70,510 C110,540 170,530 230,490 C190,520 200,570 270,580 C350,590 430,500 480,400 Z" />
+                </g>
+                <g id="right-wing">
+                    <path d="M520,400 C550,350 620,250 750,180 C800,150 900,130 950,180 C970,210 980,250 950,290 C990,280 1010,310 1000,350 C990,390 960,410 920,410 C970,420 980,470 930,510 C890,540 830,530 770,490 C810,520 800,570 730,580 C650,590 570,500 520,400 Z" />
+                </g>
+                <g stroke-opacity="0.2" fill="none" stroke-width="1.2">
+                    <path d="M430,380 Q300,280 100,220" />
+                    <path d="M570,380 Q700,280 900,220" />
                 </g>
             </g>
         </svg>
 
         <div class="envelope">
-             <div class="card">
+            <div class="card">
                 <div class="card-inner">
                     <h2 style="margin:0 0 10px 0; font-size: 2.5rem; color: #222;">For You</h2>
                     <div id="typewriter"></div>
