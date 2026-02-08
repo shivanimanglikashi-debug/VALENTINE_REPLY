@@ -30,10 +30,9 @@
             position: relative;
             cursor: pointer;
             z-index: 10;
-            perspective: 1000px;
         }
 
-        /* --- THE WINGS (CSS Shapes matching your Paper Craft photo) --- */
+        /* --- THE WINGS (Pure CSS - Always visible) --- */
         .wing {
             position: absolute;
             width: 130px;
@@ -57,10 +56,10 @@
             border-bottom-left-radius: 15px;
             border-bottom-right-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            z-index: 20; /* The base stays here */
+            z-index: 20;
         }
 
-        /* Red Bows */
+        /* Red Bows scattered on envelope base */
         .mini-bow {
             position: absolute; width: 22px; height: 14px;
             background: var(--bow-red); border-radius: 50%; z-index: 25;
@@ -72,7 +71,7 @@
         .mini-bow::before { left: -6px; transform: rotate(-45deg); }
         .mini-bow::after { right: -6px; transform: rotate(45deg); }
 
-        /* Flap Logic */
+        /* Flap */
         .envelope::before {
             content: ''; position: absolute; top: 0; z-index: 30;
             border-top: 130px solid var(--flap-color);
@@ -80,7 +79,7 @@
             transform-origin: top; transition: transform 0.6s;
         }
 
-        /* --- THE CARD (Sits ON the envelope) --- */
+        /* --- THE CARD (Comes in FRONT of envelope) --- */
         .card {
             position: absolute;
             bottom: 15px;
@@ -88,7 +87,7 @@
             width: 320px;
             height: 200px;
             background: #fff;
-            z-index: 10; /* Starts inside */
+            z-index: 10; /* Initially hidden inside */
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s 0.4s;
             padding: 20px;
             box-sizing: border-box;
@@ -101,7 +100,7 @@
         /* --- OPEN STATE --- */
         .envelope-wrapper.open .envelope::before { 
             transform: rotateX(180deg); 
-            z-index: 5; /* Moves flap to the back */
+            z-index: 5; /* Flap moves to back */
         }
 
         .envelope-wrapper.open .wing { opacity: 1; }
@@ -109,10 +108,9 @@
         .envelope-wrapper.open .wing-right { transform: translate(10px, -10px) rotate(-20deg); }
 
         .envelope-wrapper.open .card {
-            /* This moves the card UP then places it IN FRONT of the envelope */
-            transform: translateY(-100px); 
+            transform: translateY(-100px); /* Slides up to sit on the envelope */
             opacity: 1;
-            z-index: 100; /* BRINGS IT TO THE VERY FRONT */
+            z-index: 100; /* BRINGS IT TO THE FRONT */
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
@@ -147,7 +145,7 @@
     </div>
 
     <audio id="bgMusic" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+        <source src="https://www.mboxdrive.com/Ed%20Sheeran%20-%20Perfect.mp3" type="audio/mpeg">
     </audio>
 
     <script>
@@ -159,7 +157,11 @@
             isOpened = true;
             document.querySelector('.envelope-wrapper').classList.add('open');
             document.getElementById('clickText').style.display = 'none';
-            document.getElementById('bgMusic').play().catch(() => {});
+            
+            // Start music
+            const music = document.getElementById('bgMusic');
+            music.play().catch(() => console.log("Music play blocked - will play on next click"));
+
             setTimeout(typeWriter, 1000);
             setInterval(createFloatingItems, 300);
         }
