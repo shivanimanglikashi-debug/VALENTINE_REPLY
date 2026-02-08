@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Accepted</title>
+    <style>
+        body { 
+            background-color: #0d1117; 
+            color: #58a6ff; 
+            font-family: 'Courier New', monospace; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            border: 1px solid #30363d;
+            padding: 40px;
+            background: #161b22;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 80%;
+        }
+        .line { margin-bottom: 10px; }
+        .success { color: #3fb950; font-weight: bold; }
+        .heart { color: #f85149; font-size: 50px; margin-top: 20px; text-align: center; animation: pulse 1s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .cursor { border-left: 8px solid #58a6ff; margin-left: 5px; animation: blink 0.7s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="line">> Incoming connection from Sahelii Moti...</div>
+        <div class="line">> Handshake protocol initiated... <span class="success">[CONNECTED]</span></div>
+        <div class="line">> Authenticating feelings... <span class="success">[VERIFIED]</span></div>
+        <div class="line">> Status: <span class="success">200 OK</span></div>
+        <div class="line" style="font-size: 1.5em; margin-top: 20px;">> RESPONSE: <b>YES!</b><span class="cursor"></span></div>
+        <div class="heart">❤️</div>
+    </div>
+</body>
+</html>
