@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Letter For You</title>
+    <title>A Special Surprise!</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
         :root {
             --pink-bg: #ffeef2;
             --envelope-color: #f06292;
             --flap-color: #f48fb1;
-            --bow-color: #ff0000;
+            --bow-red: #ff0000;
         }
 
         body {
@@ -26,14 +26,13 @@
             font-family: 'Dancing Script', cursive;
         }
 
-        /* Envelope Container */
+        /* Envelope Wrapper */
         .envelope-wrapper {
             position: relative;
             cursor: pointer;
             z-index: 10;
         }
 
-        /* The Envelope Base */
         .envelope {
             position: relative;
             width: 350px;
@@ -41,36 +40,30 @@
             background: var(--envelope-color);
             border-bottom-left-radius: 15px;
             border-bottom-right-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        /* Red Bows */
-        .bow {
+        /* Random Scattered Bows */
+        .mini-bow {
             position: absolute;
-            width: 40px;
-            height: 25px;
-            background: var(--bow-color);
+            width: 20px;
+            height: 12px;
+            background: var(--bow-red);
             border-radius: 50%;
-            z-index: 10;
+            z-index: 11;
         }
-        .bow::before, .bow::after {
+        .mini-bow::before, .mini-bow::after {
             content: '';
             position: absolute;
-            width: 25px;
-            height: 35px;
-            background: var(--bow-color);
+            width: 12px;
+            height: 15px;
+            background: var(--bow-red);
             border-radius: 50% 50% 0 0;
-            top: -10px;
+            top: -5px;
         }
-        .bow::before { left: -10px; transform: rotate(-45deg); }
-        .bow::after { right: -10px; transform: rotate(45deg); }
-        
-        .bow-tl { top: -10px; left: -10px; transform: scale(0.7); }
-        .bow-tr { top: -10px; right: -10px; transform: scale(0.7); }
-        .bow-bl { bottom: -10px; left: -10px; transform: scale(0.7); }
-        .bow-br { bottom: -10px; right: -10px; transform: scale(0.7); }
+        .mini-bow::before { left: -5px; transform: rotate(-45deg); }
+        .mini-bow::after { right: -5px; transform: rotate(45deg); }
 
-        /* Envelope Flap */
         .envelope::before {
             content: '';
             position: absolute;
@@ -83,7 +76,7 @@
             transition: transform 0.6s 0.3s;
         }
 
-        /* The Card inside */
+        /* Card Animation */
         .card {
             position: absolute;
             bottom: 10px;
@@ -91,7 +84,6 @@
             width: 320px;
             height: 200px;
             background: #fff;
-            border: 2px solid #ffc1cc;
             z-index: 2;
             transition: 0.8s ease-in-out;
             padding: 25px;
@@ -99,48 +91,46 @@
             text-align: center;
             border-radius: 10px;
             opacity: 0;
+            border: 1px solid #ffc1cc;
         }
 
-        /* Animation when Opened */
-        .envelope-wrapper.open .envelope::before {
-            transform: rotateX(180deg);
-            z-index: 0;
+        /* Angel Panda Container */
+        .panda-container {
+            position: absolute;
+            bottom: -30px;
+            left: -140px;
+            width: 150px;
+            z-index: 15;
+            display: none;
+            animation: floatDance 2s infinite alternate ease-in-out;
         }
+
+        @keyframes floatDance {
+            0% { transform: translateY(0) rotate(-5deg); }
+            100% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        /* Envelope Open State */
+        .envelope-wrapper.open .envelope::before { transform: rotateX(180deg); z-index: 0; }
         .envelope-wrapper.open .card {
-            transform: translateY(-220px) scale(1.1);
+            transform: translateY(-230px);
             height: 400px;
             opacity: 1;
             z-index: 5;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
+        .envelope-wrapper.open .panda-container { display: block; }
 
-        #typewriter {
-            font-size: 2em;
-            color: #d81b60;
-            line-height: 1.4;
-            white-space: pre-wrap;
-        }
+        #typewriter { font-size: 1.8em; color: #d81b60; line-height: 1.4; }
 
-        .heart-main {
-            color: #ff4d6d;
-            font-size: 50px;
-            animation: pulse 1s infinite;
-            display: none;
-            margin-top: 20px;
-        }
-
-        @keyframes pulse { 50% { transform: scale(1.2); } }
-
-        .falling-heart {
-            position: absolute; top: -10%; font-size: 25px;
+        /* Floating Feathers & Hearts */
+        .floating-item {
+            position: absolute; top: -10%; font-size: 20px;
             animation: fall linear forwards; pointer-events: none;
         }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
-        .instruction {
-            position: absolute; bottom: 10%; color: #d81b60;
-            font-size: 1.5em; animation: pulse 1.5s infinite;
-        }
+        .instruction { position: absolute; bottom: 8%; color: #d81b60; font-size: 1.5em; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 50% { transform: scale(1.1); } }
     </style>
 </head>
 <body>
@@ -148,21 +138,26 @@
     <div class="instruction" id="clickText">Click to open the envelope...</div>
 
     <div class="envelope-wrapper" onclick="openEnvelope()">
-        <div class="bow bow-tl"></div>
-        <div class="bow bow-tr"></div>
-        <div class="bow bow-bl"></div>
-        <div class="bow bow-br"></div>
+        <div class="mini-bow" style="top: 20px; left: 40px; transform: rotate(-15deg);"></div>
+        <div class="mini-bow" style="top: 140px; right: 30px; transform: rotate(20deg);"></div>
+        <div class="mini-bow" style="bottom: 40px; left: 80px; transform: rotate(-10deg);"></div>
+        <div class="mini-bow" style="top: 80px; right: 100px; transform: rotate(15deg);"></div>
+        <div class="mini-bow" style="bottom: 20px; right: 50px; transform: rotate(-25deg);"></div>
+
+        <div class="panda-container">
+            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMml3ZGFiaHV4Z285eWZ3OHBqbjF6Z2dzZ3R0Z2ZhcjV6Z2dzZ3R0ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/X8yP6i8Y00z9530lT3/giphy.gif" style="width:100%; filter: drop-shadow(0 0 5px white);" alt="Angel Panda">
+        </div>
 
         <div class="envelope">
             <div class="card">
                 <div id="typewriter"></div>
-                <div class="heart-main" id="mainHeart">❤️</div>
+                <div style="font-size: 45px; margin-top: 15px;">❤️</div>
             </div>
         </div>
     </div>
 
     <audio id="bgMusic" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <source src="https://www.mboxdrive.com/Perfect%20Instrumental.mp3" type="audio/mpeg">
     </audio>
 
     <script>
@@ -176,13 +171,10 @@
 
             document.querySelector('.envelope-wrapper').classList.add('open');
             document.getElementById('clickText').style.display = 'none';
-
-            // Start music
             document.getElementById('bgMusic').play();
 
-            // Typing animation
             setTimeout(typeWriter, 1200);
-            setInterval(createHeart, 400);
+            setInterval(createFloatingItems, 300);
         }
 
         function typeWriter() {
@@ -190,20 +182,19 @@
                 document.getElementById("typewriter").innerHTML += message.charAt(i);
                 i++;
                 setTimeout(typeWriter, 100);
-            } else {
-                document.getElementById("mainHeart").style.display = "block";
             }
         }
 
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('falling-heart');
-            const types = ['❤️', '🎀', '🌸', '💖'];
-            heart.innerHTML = types[Math.floor(Math.random() * types.length)];
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 3 + 3 + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => { heart.remove(); }, 6000);
+        function createFloatingItems() {
+            const item = document.createElement('div');
+            item.classList.add('floating-item');
+            const types = ['❤️', '🪶', '🌸', '💖', '🐼', '🎀']; // Includes Feathers (🪶)
+            item.innerHTML = types[Math.floor(Math.random() * types.length)];
+            item.style.left = Math.random() * 100 + 'vw';
+            item.style.animationDuration = Math.random() * 3 + 4 + 's';
+            item.style.opacity = Math.random();
+            document.body.appendChild(item);
+            setTimeout(() => { item.remove(); }, 7000);
         }
     </script>
 </body>
