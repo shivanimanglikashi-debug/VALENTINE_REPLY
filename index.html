@@ -10,7 +10,6 @@
             --pink-bg: #ffeef2;
             --envelope-color: #f06292;
             --flap-color: #f48fb1;
-            --bow-red: #ff0000;
         }
 
         body {
@@ -32,27 +31,40 @@
             z-index: 10;
         }
 
-        /* --- STYLIZED CSS WINGS --- */
+        /* --- REALISTIC FEATHERED WINGS --- */
         .wing {
             position: absolute;
-            width: 150px;
+            width: 170px;
             height: 100px;
-            background: rgba(255, 255, 255, 0.9);
-            top: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            top: 10px;
             z-index: 5;
             opacity: 0;
-            transition: all 0.8s ease;
-            /* Creating a feathered wing shape using border-radius */
-            border-radius: 20% 100% 20% 100%;
-            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.05), 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.9s ease-in-out;
+            border-radius: 0% 100% 40% 60% / 0% 100% 20% 80%;
+            box-shadow: 
+                -5px 10px 20px rgba(0,0,0,0.1),
+                inset 10px -10px 20px rgba(255,255,255,1);
         }
+        
         .wing-left { 
-            left: -120px; 
-            transform: rotate(-20deg) skewY(-10deg); 
+            left: -140px; 
+            transform: rotate(-10deg) skewY(-5deg);
         }
+        
         .wing-right { 
-            right: -120px; 
-            transform: scaleX(-1) rotate(-20deg) skewY(-10deg); 
+            right: -140px; 
+            transform: scaleX(-1) rotate(-10deg) skewY(-5deg); 
+        }
+
+        /* Gentle Flap Animation */
+        @keyframes flap {
+            0%, 100% { transform: rotate(-10deg) skewY(-5deg); }
+            50% { transform: rotate(-20deg) translateY(-10px) skewY(-8deg); }
+        }
+        @keyframes flap-right {
+            0%, 100% { transform: scaleX(-1) rotate(-10deg) skewY(-5deg); }
+            50% { transform: scaleX(-1) rotate(-20deg) translateY(-10px) skewY(-8deg); }
         }
 
         .envelope {
@@ -62,31 +74,19 @@
             background: var(--envelope-color);
             border-bottom-left-radius: 15px;
             border-bottom-right-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             z-index: 20;
         }
-
-        /* Red Bow Decorations */
-        .mini-bow {
-            position: absolute; width: 22px; height: 14px;
-            background: var(--bow-red); border-radius: 50%; z-index: 25;
-        }
-        .mini-bow::before, .mini-bow::after {
-            content: ''; position: absolute; width: 14px; height: 18px;
-            background: var(--bow-red); border-radius: 50% 50% 0 0; top: -6px;
-        }
-        .mini-bow::before { left: -6px; transform: rotate(-45deg); }
-        .mini-bow::after { right: -6px; transform: rotate(45deg); }
 
         /* Envelope Flap */
         .envelope::before {
             content: ''; position: absolute; top: 0; z-index: 30;
             border-top: 130px solid var(--flap-color);
             border-left: 175px solid transparent; border-right: 175px solid transparent;
-            transform-origin: top; transition: transform 0.6s;
+            transform-origin: top; transition: transform 0.6s ease;
         }
 
-        /* --- THE CARD (Foreground Pop-up) --- */
+        /* --- THE CARD --- */
         .card {
             position: absolute;
             bottom: 15px;
@@ -94,12 +94,12 @@
             width: 320px;
             height: 200px;
             background: #fff;
-            z-index: 10; /* Hidden inside */
+            z-index: 10;
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s 0.4s;
             padding: 25px;
             box-sizing: border-box;
             text-align: center;
-            border-radius: 10px;
+            border-radius: 12px;
             opacity: 0;
             border: 2px solid #ffc1cc;
             display: flex;
@@ -107,21 +107,21 @@
             justify-content: center;
         }
 
-        /* --- OPEN STATE LOGIC --- */
+        /* --- OPEN STATE --- */
         .envelope-wrapper.open .envelope::before { 
             transform: rotateX(180deg); 
-            z-index: 5; /* Flap moves to back */
+            z-index: 5; /* Flap goes behind card */
         }
 
         .envelope-wrapper.open .wing { opacity: 1; }
-        .envelope-wrapper.open .wing-left { transform: rotate(-35deg) skewY(-10deg) translate(-20px, -20px); }
-        .envelope-wrapper.open .wing-right { transform: scaleX(-1) rotate(-35deg) skewY(-10deg) translate(-20px, -20px); }
+        .envelope-wrapper.open .wing-left { animation: flap 2.5s infinite ease-in-out; }
+        .envelope-wrapper.open .wing-right { animation: flap-right 2.5s infinite ease-in-out; }
 
         .envelope-wrapper.open .card {
-            transform: translateY(-120px); /* Slides up to sit in front */
+            transform: translateY(-120px); 
             opacity: 1;
-            z-index: 100; /* FORCE TO FRONT */
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            z-index: 100; /* Card sits in front of everything */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
         #typewriter { font-size: 1.7em; color: #d81b60; line-height: 1.4; font-weight: bold; }
@@ -141,29 +141,19 @@
 </head>
 <body>
 
-    <div class="instruction" id="clickText">Click the envelope to open!</div>
+    <div class="instruction" id="clickText">Click to open your message...</div>
 
     <div class="envelope-wrapper" onclick="openEnvelope()">
         <div class="wing wing-left"></div>
         <div class="wing wing-right"></div>
 
-        <div class="mini-bow" style="top: 20px; left: 40px; transform: rotate(-15deg);"></div>
-        <div class="mini-bow" style="top: 150px; right: 40px; transform: rotate(20deg);"></div>
-        <div class="mini-bow" style="bottom: 30px; left: 100px; transform: rotate(-10deg);"></div>
-        <div class="mini-bow" style="top: 90px; right: 120px; transform: rotate(15deg);"></div>
-        <div class="mini-bow" style="bottom: 50px; right: 10px; transform: rotate(-25deg);"></div>
-
         <div class="envelope">
             <div class="card">
                 <div id="typewriter"></div>
-                <div style="font-size: 35px; margin-top: 10px;">❤️</div>
+                <div style="font-size: 35px; margin-top: 15px;">❤️</div>
             </div>
         </div>
     </div>
-
-    <audio id="bgMusic" loop>
-        <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Kai_Engel/Satin/Kai_Engel_-_04_-_Moonlight_Reprise.mp3" type="audio/mpeg">
-        </audio>
 
     <script>
         const message = "YES! \nI would love to be your Sahelii Moti. \nYou are the best! ❤️";
@@ -175,9 +165,6 @@
             
             document.querySelector('.envelope-wrapper').classList.add('open');
             document.getElementById('clickText').style.display = 'none';
-            
-            const music = document.getElementById('bgMusic');
-            music.play().catch(e => console.log("Audio play needs user interaction first."));
 
             setTimeout(typeWriter, 1000);
             setInterval(createFloatingItems, 300);
@@ -187,14 +174,14 @@
             if (i < message.length) {
                 document.getElementById("typewriter").innerHTML += message.charAt(i);
                 i++;
-                setTimeout(typeWriter, 80);
+                setTimeout(typeWriter, 85);
             }
         }
 
         function createFloatingItems() {
             const item = document.createElement('div');
             item.classList.add('floating-item');
-            const types = ['❤️', '✨', '🌸', '💖', '🎀']; 
+            const types = ['❤️', '✨', '🌸', '💖']; 
             item.innerHTML = types[Math.floor(Math.random() * types.length)];
             item.style.left = Math.random() * 100 + 'vw';
             item.style.animationDuration = Math.random() * 3 + 4 + 's';
