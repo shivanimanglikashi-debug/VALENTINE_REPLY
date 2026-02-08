@@ -9,7 +9,9 @@
         :root {
             --bg-grad: linear-gradient(180deg, #d35d47 0%, #f4c2b5 100%);
             --env-pink: #d9859a;
+            --env-flap: #e29fb0;
             --card-border: #d4a5b1;
+            --paper-texture: radial-gradient(circle, #ffffff 0%, #f9f4f0 100%);
         }
 
         body {
@@ -32,14 +34,14 @@
             z-index: 10;
         }
 
-        /* --- WINGS: WIDER VIEWBOX TO PREVENT CUTTING OFF --- */
+        /* --- WINGS SCALED TO 1x --- */
         .wings-svg {
             position: absolute;
-            width: 1000px; /* Wider to accommodate full feather spread */
-            height: 600px;
+            width: 800px; /* Reduced span to 1x scale */
+            height: 500px;
             z-index: 1;
             opacity: 0;
-            transform: scale(0.3) translateY(150px);
+            transform: scale(0.4) translateY(120px);
             transition: all 1.6s cubic-bezier(0.19, 1, 0.22, 1);
             filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) drop-shadow(0 10px 20px rgba(0,0,0,0.2));
         }
@@ -47,12 +49,12 @@
         /* --- ENVELOPE --- */
         .envelope {
             position: relative;
-            width: 320px;
-            height: 200px;
+            width: 400px;
+            height: 250px;
             background: var(--env-pink);
-            border-radius: 0 0 12px 12px;
+            border-radius: 0 0 15px 15px;
             z-index: 10;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
         }
 
         .envelope::before {
@@ -60,42 +62,43 @@
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 75%;
-            background: #e29fb0;
-            clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
+            background: var(--env-flap);
+            clip-path: polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%);
         }
 
-        /* --- STABLE CARD: NO DISTORTION --- */
+        /* --- CARD WITH PAPER TEXTURE --- */
         .card {
             position: absolute;
-            width: 330px;
-            height: 300px;
-            background: #fff;
-            border-radius: 12px;
-            padding: 12px;
+            width: 380px;
+            height: 340px;
+            background: var(--paper-texture);
+            border-radius: 15px;
+            padding: 15px;
             box-sizing: border-box;
             z-index: 5;
             opacity: 0;
-            display: flex; /* Ensures inner content doesn't distort */
+            display: flex;
             transform: translateY(0);
             transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            background-image: url("https://www.transparenttextures.com/patterns/felt.png");
         }
 
         .card-inner {
             flex: 1;
-            border: 3px solid var(--card-border);
-            border-radius: 8px;
+            border: 4px solid var(--card-border);
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 25px;
             text-align: center;
-            background: #fff;
-            box-sizing: border-box; /* Fixes outline distortion */
+            background: rgba(255, 255, 255, 0.6);
+            box-sizing: border-box;
         }
 
-        /* --- OPEN STATE --- */
+        /* --- ANIMATIONS --- */
         .container.open .wings-svg {
             opacity: 1;
             transform: scale(1) translateY(-60px);
@@ -103,16 +106,16 @@
 
         .container.open .card {
             opacity: 1;
-            transform: translateY(-200px);
+            transform: translateY(-240px);
             z-index: 100;
         }
 
         #typewriter {
-            font-size: 1.25rem;
-            color: #333;
-            line-height: 1.4;
+            font-size: 1.4rem;
+            color: #2c2c2c;
+            line-height: 1.5;
             font-weight: bold;
-            min-height: 120px; /* Prevents card jumping during type */
+            min-height: 150px;
         }
 
         .heart-particle {
@@ -128,7 +131,7 @@
 
     <div class="container" onclick="openSurprise()">
         <svg class="wings-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
-            <g stroke="black" stroke-width="1.5" fill="white" stroke-linejoin="round">
+            <g stroke="black" stroke-width="1.8" fill="white" stroke-linejoin="round">
                 <path d="M500,400 
                          C480,350 420,250 300,180 
                          C250,150 150,130 100,180 
@@ -151,13 +154,13 @@
                          C760,520 750,570 680,580 
                          C600,590 520,500 500,400 Z" />
                 
-                <g stroke-opacity="0.3" fill="none">
-                    <path d="M450,380 Q350,300 150,230" />
-                    <path d="M460,420 Q350,420 150,400" />
-                    <path d="M470,450 Q400,500 300,530" />
-                    <path d="M550,380 Q650,300 850,230" />
-                    <path d="M540,420 Q650,420 850,400" />
-                    <path d="M530,450 Q600,500 700,530" />
+                <g stroke-opacity="0.3" fill="none" stroke-width="1.2">
+                    <path d="M450,380 Q320,280 120,220" />
+                    <path d="M460,420 Q320,420 120,400" />
+                    <path d="M470,460 Q400,520 280,550" />
+                    <path d="M550,380 Q680,280 880,220" />
+                    <path d="M540,420 Q680,420 880,400" />
+                    <path d="M530,460 Q600,520 720,550" />
                 </g>
             </g>
         </svg>
@@ -166,9 +169,9 @@
         
         <div class="card">
             <div class="card-inner">
-                <h2 style="margin:0 0 10px 0; font-size: 2.2rem; color: #333;">For You</h2>
+                <h2 style="margin:0 0 10px 0; font-size: 2.5rem; color: #222;">For You</h2>
                 <div id="typewriter"></div>
-                <div style="margin-top:15px; font-size: 28px;">❤️</div>
+                <div style="margin-top:15px; font-size: 32px;">❤️</div>
             </div>
         </div>
     </div>
