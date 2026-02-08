@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For YOU</title>
+    <title>For My Sahelii Moti</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-top: #c8533d;
             --bg-bottom: #f2c7bc;
             --env-pink: #d9859a;
-            --card-border: #f4b4c4;
+            --env-light: #fce4ec;
+            --card-border: #d4a5b1;
         }
 
         body {
@@ -33,132 +34,135 @@
             z-index: 10;
         }
 
-        /* --- FALLING HEARTS --- */
-        .heart-particle {
+        /* --- DETAILED SVG WINGS WITH OUTLINES --- */
+        .wings-svg {
             position: absolute;
-            top: -10%;
-            color: rgba(255, 255, 255, 0.6);
-            user-select: none;
-            pointer-events: none;
+            width: 850px;
             z-index: 1;
-            animation: fall linear forwards;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(110vh) rotate(360deg);
-            }
-        }
-
-        /* --- REALISTIC SVG WINGS --- */
-        .wings-container {
-            position: absolute;
-            width: 750px;
-            z-index: 2;
             opacity: 0;
-            transform: scale(0.6) translateY(20px);
-            transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-            pointer-events: none;
+            transform: scale(0.4) translateY(50px);
+            transition: all 1.3s cubic-bezier(0.19, 1, 0.22, 1);
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
         }
 
-        /* --- ENVELOPE BASE --- */
-        .envelope-base {
+        /* --- ENVELOPE --- */
+        .envelope {
             position: relative;
-            width: 240px;
-            height: 160px;
+            width: 300px;
+            height: 200px;
             background: var(--env-pink);
-            border-radius: 4px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             z-index: 10;
         }
 
-        /* --- THE FRAMED CARD --- */
+        .envelope-inner {
+            position: absolute;
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            background: var(--env-light);
+            clip-path: polygon(0% 0%, 100% 0%, 50% 50%);
+            opacity: 0.5;
+        }
+
+        /* --- THE CARD --- */
         .card {
             position: absolute;
-            width: 230px;
-            height: 150px;
+            width: 280px;
+            height: 180px;
             background: #fff;
-            border-radius: 12px;
-            padding: 8px;
+            border-radius: 15px;
+            padding: 10px;
             box-sizing: border-box;
             z-index: 20;
             opacity: 0;
             transform: translateY(0);
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         .card-inner {
-            width: 100%;
-            height: 100%;
-            border: 2px solid var(--card-border);
-            border-radius: 8px;
+            width: 100%; height: 100%;
+            border: 4px solid var(--card-border);
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
             background: #fff;
         }
 
         /* --- OPEN STATE --- */
-        .container.open .wings-container {
+        .container.open .wings-svg {
             opacity: 1;
-            transform: scale(1) translateY(0);
+            transform: scale(1.1) translateY(-20px);
         }
 
         .container.open .card {
             opacity: 1;
-            transform: translateY(-90px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transform: translateY(-130px) translateX(20px);
+            z-index: 100;
+        }
+
+        /* --- MULTICOLOR FALLING HEARTS --- */
+        .heart-particle {
+            position: absolute;
+            top: -10%;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear forwards;
+            z-index: 5;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
         }
 
         #typewriter {
-            font-size: 1.4em;
-            color: #444;
+            font-size: 1.3em;
+            color: #333;
             line-height: 1.4;
             font-weight: bold;
         }
 
         .heart-icon {
             color: #e91e63;
-            font-size: 24px;
-            margin-top: 8px;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+            font-size: 30px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
     <div class="container" onclick="openSurprise()">
-        <div class="wings-container">
-            <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
-                        <feOffset dx="0" dy="4" />
-                        <feComponentTransfer><feFuncA type="linear" slope="0.3"/></feComponentTransfer>
-                        <feMerge>
-                            <feMergeNode />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-                </defs>
-                <g filter="url(#softShadow)" fill="white">
-                    <path d="M400,200 Q350,150 200,100 Q150,80 80,150 Q120,170 150,170 Q110,200 140,220 Q160,210 180,210 Q140,240 170,260 Q190,240 210,240 Q180,270 210,290 Q230,260 250,260 Q220,300 250,320 Q280,280 400,200 Z" />
-                    <path d="M400,200 Q450,150 600,100 Q650,80 720,150 Q680,170 650,170 Q690,200 660,220 Q640,210 620,210 Q660,240 630,260 Q610,240 590,240 Q620,270 590,290 Q570,260 550,260 Q580,300 550,320 Q520,280 400,200 Z" />
+        <svg class="wings-svg" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="shadow">
+                    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            <g filter="url(#shadow)">
+                <g fill="white" stroke="#222" stroke-width="1.2">
+                    <path d="M400,200 Q380,100 250,60 Q200,50 150,80 Q170,100 200,100 Z" />
+                    <path d="M380,210 Q350,130 200,110 Q150,110 120,150 Q150,170 180,170 Z" />
+                    <path d="M360,220 Q320,160 180,160 Q130,170 110,210 Q140,230 170,220 Z" />
+                    <path d="M340,230 Q300,190 190,210 Q150,220 140,260 Q170,280 200,260 Z" />
+                    <path d="M320,240 Q280,220 210,250 Q180,260 190,300 Q220,310 240,290 Z" />
                 </g>
-            </svg>
-        </div>
+                <g transform="scale(-1 1) translate(-800 0)" fill="white" stroke="#222" stroke-width="1.2">
+                    <path d="M400,200 Q380,100 250,60 Q200,50 150,80 Q170,100 200,100 Z" />
+                    <path d="M380,210 Q350,130 200,110 Q150,110 120,150 Q150,170 180,170 Z" />
+                    <path d="M360,220 Q320,160 180,160 Q130,170 110,210 Q140,230 170,220 Z" />
+                    <path d="M340,230 Q300,190 190,210 Q150,220 140,260 Q170,280 200,260 Z" />
+                    <path d="M320,240 Q280,220 210,250 Q180,260 190,300 Q220,310 240,290 Z" />
+                </g>
+            </g>
+        </svg>
 
-        <div class="envelope-base"></div>
+        <div class="envelope">
+            <div class="envelope-inner"></div>
+        </div>
         
         <div class="card">
             <div class="card-inner">
@@ -169,7 +173,7 @@
     </div>
 
     <script>
-        const message = "YES! I would love to be your Valentine.";
+        const message = "YES! I would love to be your Sahelii Moti. You are the best!";
         let i = 0;
         let isOpened = false;
 
@@ -177,33 +181,37 @@
             if (isOpened) return;
             isOpened = true;
             document.querySelector('.container').classList.add('open');
+            setTimeout(typeWriter, 1000);
             
-            setTimeout(typeWriter, 800);
-            // Start hearts when opened
-            setInterval(createFallingHeart, 300);
+            // Generate multicolor hearts
+            setInterval(createMulticolorHeart, 250);
         }
 
         function typeWriter() {
             if (i < message.length) {
                 document.getElementById("typewriter").innerHTML += message.charAt(i);
                 i++;
-                setTimeout(typeWriter, 65);
+                setTimeout(typeWriter, 70);
             }
         }
 
-        function createFallingHeart() {
+        function createMulticolorHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart-particle');
+            
+            // Randomly select color from a romantic palette
+            const colors = ['#ffffff', '#ffb7c5', '#e91e63', '#ff8a80', '#fce4ec'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
             heart.innerHTML = '❤️';
+            heart.style.color = randomColor;
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.fontSize = Math.random() * 15 + 10 + 'px';
-            heart.style.animationDuration = Math.random() * 3 + 3 + 's';
-            heart.style.opacity = Math.random() * 0.5 + 0.2;
+            heart.style.fontSize = Math.random() * 18 + 10 + 'px';
+            heart.style.animationDuration = Math.random() * 3 + 2.5 + 's';
+            heart.style.opacity = Math.random() * 0.7 + 0.3;
+            
             document.body.appendChild(heart);
-
-            setTimeout(() => {
-                heart.remove();
-            }, 6000);
+            setTimeout(() => heart.remove(), 5000);
         }
     </script>
 </body>
