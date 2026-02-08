@@ -34,16 +34,18 @@
             z-index: 10;
         }
 
-        /* --- WINGS SCALED TO 1x --- */
+        /* --- WINGS (ATTACHED TO ENVELOPE) --- */
         .wings-svg {
             position: absolute;
-            width: 800px; /* Reduced span to 1x scale */
+            width: 800px;
             height: 500px;
-            z-index: 1;
+            z-index: 1; /* Behind the flap, attached to envelope body */
             opacity: 0;
-            transform: scale(0.4) translateY(120px);
+            /* Anchored to the center of the envelope */
+            transform: scale(0.2) translateY(50px);
             transition: all 1.6s cubic-bezier(0.19, 1, 0.22, 1);
             filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+            pointer-events: none;
         }
 
         /* --- ENVELOPE --- */
@@ -55,6 +57,9 @@
             border-radius: 0 0 15px 15px;
             z-index: 10;
             box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .envelope::before {
@@ -64,6 +69,7 @@
             width: 100%; height: 75%;
             background: var(--env-flap);
             clip-path: polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%);
+            z-index: 12; /* Keeps the pocket looking deep */
         }
 
         /* --- CARD WITH PAPER TEXTURE --- */
@@ -98,15 +104,15 @@
             box-sizing: border-box;
         }
 
-        /* --- ANIMATIONS --- */
+        /* --- OPEN STATE --- */
         .container.open .wings-svg {
             opacity: 1;
-            transform: scale(1) translateY(-60px);
+            transform: scale(1) translateY(-100px); /* Wings fly out from envelope */
         }
 
         .container.open .card {
             opacity: 1;
-            transform: translateY(-240px);
+            transform: translateY(-260px);
             z-index: 100;
         }
 
@@ -132,46 +138,22 @@
     <div class="container" onclick="openSurprise()">
         <svg class="wings-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
             <g stroke="black" stroke-width="1.8" fill="white" stroke-linejoin="round">
-                <path d="M500,400 
-                         C480,350 420,250 300,180 
-                         C250,150 150,130 100,180 
-                         C80,210 70,250 100,290 
-                         C60,280 40,310 50,350 
-                         C60,390 90,410 130,410 
-                         C80,420 70,470 120,510 
-                         C160,540 220,530 280,490 
-                         C240,520 250,570 320,580 
-                         C400,590 480,500 500,400 Z" />
-                
-                <path d="M500,400 
-                         C520,350 580,250 700,180 
-                         C750,150 850,130 900,180 
-                         C920,210 930,250 900,290 
-                         C940,280 960,310 950,350 
-                         C940,390 910,410 870,410 
-                         C920,420 930,470 880,510 
-                         C840,540 780,530 720,490 
-                         C760,520 750,570 680,580 
-                         C600,590 520,500 500,400 Z" />
-                
+                <path d="M500,400 C480,350 420,250 300,180 C250,150 150,130 100,180 C80,210 70,250 100,290 C60,280 40,310 50,350 C60,390 90,410 130,410 C80,420 70,470 120,510 C160,540 220,530 280,490 C240,520 250,570 320,580 C400,590 480,500 500,400 Z" />
+                <path d="M500,400 C520,350 580,250 700,180 C750,150 850,130 900,180 C920,210 930,250 900,290 C940,280 960,310 950,350 C940,390 910,410 870,410 C920,420 930,470 880,510 C840,540 780,530 720,490 C760,520 750,570 680,580 C600,590 520,500 500,400 Z" />
                 <g stroke-opacity="0.3" fill="none" stroke-width="1.2">
-                    <path d="M450,380 Q320,280 120,220" />
-                    <path d="M460,420 Q320,420 120,400" />
-                    <path d="M470,460 Q400,520 280,550" />
-                    <path d="M550,380 Q680,280 880,220" />
-                    <path d="M540,420 Q680,420 880,400" />
-                    <path d="M530,460 Q600,520 720,550" />
+                    <path d="M450,380 Q320,280 120,220" /><path d="M460,420 Q320,420 120,400" /><path d="M470,460 Q400,520 280,550" />
+                    <path d="M550,380 Q680,280 880,220" /><path d="M540,420 Q680,420 880,400" /><path d="M530,460 Q600,520 720,550" />
                 </g>
             </g>
         </svg>
 
-        <div class="envelope"></div>
-        
-        <div class="card">
-            <div class="card-inner">
-                <h2 style="margin:0 0 10px 0; font-size: 2.5rem; color: #222;">For You</h2>
-                <div id="typewriter"></div>
-                <div style="margin-top:15px; font-size: 32px;">❤️</div>
+        <div class="envelope">
+             <div class="card">
+                <div class="card-inner">
+                    <h2 style="margin:0 0 10px 0; font-size: 2.5rem; color: #222;">For You</h2>
+                    <div id="typewriter"></div>
+                    <div style="margin-top:15px; font-size: 32px;">❤️</div>
+                </div>
             </div>
         </div>
     </div>
