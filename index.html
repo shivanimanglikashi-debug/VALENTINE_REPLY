@@ -26,19 +26,11 @@
             font-family: 'Dancing Script', cursive;
         }
 
-        /* Floating Items (Feathers, Hearts) */
-        .floating-item {
-            position: absolute; top: -10%; font-size: 20px;
-            animation: fall linear forwards; pointer-events: none;
-            z-index: 1;
-        }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
-
-        /* Envelope Wrapper */
         .envelope-wrapper {
             position: relative;
             cursor: pointer;
             z-index: 10;
+            transition: 0.5s;
         }
 
         .envelope {
@@ -51,98 +43,75 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        /* Red Bows Styling */
+        /* Scattered Bows */
         .mini-bow {
-            position: absolute;
-            width: 20px;
-            height: 12px;
-            background: var(--bow-red);
-            border-radius: 50%;
-            z-index: 11;
+            position: absolute; width: 22px; height: 14px;
+            background: var(--bow-red); border-radius: 50%; z-index: 11;
         }
         .mini-bow::before, .mini-bow::after {
-            content: '';
-            position: absolute;
-            width: 12px;
-            height: 15px;
-            background: var(--bow-red);
-            border-radius: 50% 50% 0 0;
-            top: -5px;
+            content: ''; position: absolute; width: 14px; height: 18px;
+            background: var(--bow-red); border-radius: 50% 50% 0 0; top: -6px;
         }
-        .mini-bow::before { left: -5px; transform: rotate(-45deg); }
-        .mini-bow::after { right: -5px; transform: rotate(45deg); }
+        .mini-bow::before { left: -6px; transform: rotate(-45deg); }
+        .mini-bow::after { right: -6px; transform: rotate(45deg); }
 
-        /* Envelope Flap */
-        .envelope::before {
-            content: '';
+        /* The Wings (styled like your paper craft image) */
+        .envelope-wings {
             position: absolute;
+            width: 100%;
+            height: 100%;
             top: 0;
-            z-index: 4;
-            border-top: 130px solid var(--flap-color);
-            border-left: 175px solid transparent;
-            border-right: 175px solid transparent;
-            transform-origin: top;
-            transition: transform 0.6s 0.3s;
+            left: 0;
+            z-index: -1;
         }
-
-        /* Card Animation */
-        .card {
-            position: absolute;
-            bottom: 10px;
-            left: 15px;
-            width: 320px;
-            height: 200px;
-            background: #fff;
-            z-index: 2;
-            transition: 0.8s ease-in-out;
-            padding: 25px;
-            box-sizing: border-box;
-            text-align: center;
-            border-radius: 10px;
-            opacity: 0;
-            border: 1px solid #ffc1cc;
-        }
-
-        /* Dancing Couple (Giphy Sticker) */
-        .couple-container {
-            position: absolute;
-            bottom: -20px;
-            left: -140px;
-            width: 180px;
-            z-index: 15;
-            display: none;
-            animation: bounceDance 1.5s infinite alternate ease-in-out;
-        }
-        @keyframes bounceDance {
-            0% { transform: scale(1) rotate(-5deg); }
-            100% { transform: scale(1.05) rotate(5deg); }
-        }
-
-        /* Angel Wings for the Side of Envelope */
         .wing {
             position: absolute;
-            width: 80px;
-            top: 50px;
-            z-index: 0;
-            opacity: 0.8;
-            display: none;
+            width: 120px;
+            top: 20px;
+            transition: 0.8s;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
         }
-        .wing-left { left: -60px; transform: scaleX(-1); }
-        .wing-right { right: -60px; }
+        .wing-left { left: -90px; transform: rotate(-10deg); }
+        .wing-right { right: -90px; transform: rotate(10deg) scaleX(-1); }
 
-        /* Opening Logic */
-        .envelope-wrapper.open .envelope::before { transform: rotateX(180deg); z-index: 0; }
-        .envelope-wrapper.open .card {
-            transform: translateY(-230px);
-            height: 400px;
-            opacity: 1;
-            z-index: 5;
+        .envelope::before {
+            content: ''; position: absolute; top: 0; z-index: 4;
+            border-top: 130px solid var(--flap-color);
+            border-left: 175px solid transparent; border-right: 175px solid transparent;
+            transform-origin: top; transition: transform 0.6s 0.3s;
         }
-        .envelope-wrapper.open .couple-container, 
-        .envelope-wrapper.open .wing { display: block; }
+
+        .card {
+            position: absolute; bottom: 10px; left: 15px; width: 320px; height: 200px;
+            background: #fff; z-index: 2; transition: 0.8s ease-in-out;
+            padding: 25px; box-sizing: border-box; text-align: center;
+            border-radius: 10px; opacity: 0; border: 1px solid #ffc1cc;
+        }
+
+        /* New Stable Couple Image */
+        .couple-container {
+            position: absolute;
+            bottom: -30px;
+            left: -150px;
+            width: 180px;
+            z-index: 20;
+            display: none;
+            animation: dance 2s infinite ease-in-out;
+        }
+        @keyframes dance {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .envelope-wrapper.open .envelope::before { transform: rotateX(180deg); z-index: 0; }
+        .envelope-wrapper.open .card { transform: translateY(-240px); height: 420px; opacity: 1; z-index: 5; }
+        .envelope-wrapper.open .couple-container { display: block; }
+        .envelope-wrapper.open .wing-left { transform: translate(-20px, -20px) rotate(-20deg); }
+        .envelope-wrapper.open .wing-right { transform: translate(20px, -20px) rotate(20deg) scaleX(-1); }
 
         #typewriter { font-size: 1.8em; color: #d81b60; line-height: 1.4; }
-
+        .floating-item { position: absolute; top: -10%; font-size: 20px; animation: fall linear forwards; pointer-events: none; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
         .instruction { position: absolute; bottom: 8%; color: #d81b60; font-size: 1.5em; animation: pulse 1.5s infinite; }
         @keyframes pulse { 50% { transform: scale(1.1); } }
     </style>
@@ -152,17 +121,19 @@
     <div class="instruction" id="clickText">Click to open the envelope...</div>
 
     <div class="envelope-wrapper" onclick="openEnvelope()">
+        <div class="envelope-wings">
+            <img src="https://i.ibb.co/v4m0Yv8/wings.png" class="wing wing-left" onerror="this.src='https://cdn-icons-png.flaticon.com/512/5405/5405904.png'">
+            <img src="https://i.ibb.co/v4m0Yv8/wings.png" class="wing wing-right" onerror="this.src='https://cdn-icons-png.flaticon.com/512/5405/5405904.png'">
+        </div>
+
         <div class="mini-bow" style="top: 20px; left: 40px; transform: rotate(-15deg);"></div>
         <div class="mini-bow" style="top: 150px; right: 40px; transform: rotate(20deg);"></div>
         <div class="mini-bow" style="bottom: 30px; left: 100px; transform: rotate(-10deg);"></div>
         <div class="mini-bow" style="top: 90px; right: 120px; transform: rotate(15deg);"></div>
         <div class="mini-bow" style="bottom: 50px; right: 10px; transform: rotate(-25deg);"></div>
 
-        <img src="https://cdn-icons-png.flaticon.com/512/5405/5405904.png" class="wing wing-left">
-        <img src="https://cdn-icons-png.flaticon.com/512/5405/5405904.png" class="wing wing-right">
-
         <div class="couple-container">
-            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZudGpsZGl2NGR5bms4YXFwdHh6MGx2OGFkNjE4czF4bW5ibzN0eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/iO6mxvO9S7zW1I4Xn3/giphy.gif" style="width:100%;" alt="Dancing Couple">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZudGpsZGl2NGR5bms4YXFwdHh6MGx2OGFkNjE4czF4bW5ibzN0eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/iO6mxvO9S7zW1I4Xn3/giphy.gif" style="width:100%;">
         </div>
 
         <div class="envelope">
@@ -179,20 +150,14 @@
 
     <script>
         const message = "YES! \nI would love to be your Sahelii Moti. \nYou are the best! ❤️";
-        let i = 0;
-        let isOpened = false;
+        let i = 0; let isOpened = false;
 
         function openEnvelope() {
             if (isOpened) return;
             isOpened = true;
-
             document.querySelector('.envelope-wrapper').classList.add('open');
             document.getElementById('clickText').style.display = 'none';
-            
-            // Playing the music
-            const music = document.getElementById('bgMusic');
-            music.play();
-
+            document.getElementById('bgMusic').play();
             setTimeout(typeWriter, 1200);
             setInterval(createFloatingItems, 300);
         }
