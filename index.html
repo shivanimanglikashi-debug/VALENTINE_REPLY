@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Surprise!</title>
+    <title>For My Sahelii Moti</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pink-bg: #ffeef2;
-            --envelope-color: #f06292;
-            --flap-color: #f48fb1;
-            --card-border: #f48fb1;
+            --pink-bg: #f9d9d5; /* Soft gradient background color */
+            --env-body: #e68ca3; /* The pink envelope color */
+            --env-flap: #d6718c; /* Slightly darker flap */
+            --card-border: #f2aebc;
         }
 
         body {
-            background-color: var(--pink-bg);
-            background-image: radial-gradient(#ffc1cc 2px, transparent 2px);
-            background-size: 30px 30px;
+            background: radial-gradient(circle, #fce4ec, #f8bbd0);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -32,135 +30,138 @@
             z-index: 10;
         }
 
-        /* --- DETAILED FEATHERED WINGS --- */
+        /* --- REALISTIC FEATHERED WINGS --- */
         .wing {
             position: absolute;
-            width: 220px;
-            height: 130px;
-            top: -30px;
-            z-index: 5;
+            width: 280px;
+            height: 180px;
+            top: -50px;
             opacity: 0;
-            transition: all 1s ease-in-out;
+            transition: all 1.2s ease-in-out;
             pointer-events: none;
+            z-index: 1;
         }
 
-        .wing::before, .wing::after {
+        .wing-left { left: -220px; transform: rotate(-10deg); }
+        .wing-right { right: -220px; transform: scaleX(-1) rotate(-10deg); }
+
+        /* Using a SVG-like CSS shape for feathered wings */
+        .wing::before {
             content: '';
             position: absolute;
-            background: #fff;
-            border-radius: 0% 100% 30% 70%;
-            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #ffffff 30%, #f0f0f0 100%);
+            clip-path: polygon(0% 50%, 10% 30%, 25% 15%, 45% 5%, 70% 5%, 90% 15%, 100% 40%, 90% 45%, 95% 60%, 80% 65%, 85% 80%, 65% 85%, 70% 100%, 40% 90%, 20% 75%);
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.05);
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
         }
 
-        .wing-left { left: -180px; transform: rotate(-10deg); }
-        .wing-right { right: -180px; transform: scaleX(-1) rotate(-10deg); }
-
-        .wing::before { width: 100%; height: 100%; top: 0; left: 0; opacity: 0.8; }
-        .wing::after { width: 85%; height: 85%; top: 15px; left: 10px; opacity: 1; filter: drop-shadow(-3px 3px 4px rgba(0,0,0,0.08)); }
-
-        /* --- TEXTURED ENVELOPE --- */
+        /* --- ENVELOPE BODY --- */
         .envelope {
             position: relative;
-            width: 350px;
-            height: 230px;
-            background-color: var(--envelope-color);
-            /* Linen/Paper Texture */
-            background-image: 
-                linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
-                linear-gradient(rgba(255,255,255,.07) 50%, transparent 50%);
-            background-size: 4px 4px;
-            
-            border-bottom-left-radius: 15px;
-            border-bottom-right-radius: 15px;
-            box-shadow: 
-                0 15px 35px rgba(0,0,0,0.2),
-                inset 0 -10px 20px rgba(0,0,0,0.1); /* Adds depth to the bottom */
+            width: 280px;
+            height: 180px;
+            background-color: var(--env-body);
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             z-index: 20;
         }
 
-        /* Textured Flap */
+        /* The Pointed Flap (Triangle) */
         .envelope::before {
-            content: ''; position: absolute; top: 0; z-index: 30;
-            border-top: 130px solid var(--flap-color);
-            border-left: 175px solid transparent; border-right: 175px solid transparent;
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
-            transform-origin: top; transition: transform 0.6s ease;
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-bottom: 100px solid var(--env-flap); /* Pointing down initially */
+            transform-origin: top;
+            transition: transform 0.6s ease;
+            z-index: 30;
         }
 
-        /* --- FRAMED CARD --- */
+        /* --- THE FRAMED CARD --- */
         .card {
             position: absolute;
-            bottom: 20px;
-            left: 20px;
-            width: 310px;
-            height: 200px;
+            bottom: 10px;
+            left: 10px;
+            width: 260px;
+            height: 160px;
             background: #fff;
+            padding: 8px;
+            border-radius: 12px;
             z-index: 10;
             opacity: 0;
-            padding: 8px; 
-            box-sizing: border-box;
-            border-radius: 10px;
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0s 0.4s;
-            border: 1px solid rgba(0,0,0,0.05);
         }
 
         .card-inner {
             width: 100%;
             height: 100%;
-            border: 2px solid var(--card-border);
-            border-radius: 6px;
+            border: 3px solid var(--card-border);
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 15px;
             box-sizing: border-box;
             background: #fff;
-            /* Subtle card texture */
-            background-image: radial-gradient(circle, #fdfdfd 1px, transparent 1px);
-            background-size: 10px 10px;
         }
 
         /* OPEN STATE */
-        .envelope-wrapper.open .envelope::before { transform: rotateX(180deg); z-index: 5; }
+        .envelope-wrapper.open .envelope::before {
+            transform: rotateX(180deg) translateY(100px); /* Flap flips UP */
+            z-index: 5;
+        }
+
         .envelope-wrapper.open .wing { opacity: 1; }
-        .envelope-wrapper.open .wing-left { transform: rotate(-25deg) translateY(-15px); }
-        .envelope-wrapper.open .wing-right { transform: scaleX(-1) rotate(-25deg) translateY(-15px); }
+        .envelope-wrapper.open .wing-left { transform: rotate(-20deg) translateX(-20px); }
+        .envelope-wrapper.open .wing-right { transform: scaleX(-1) rotate(-20deg) translateX(-20px); }
 
         .envelope-wrapper.open .card {
-            transform: translateY(-120px) rotate(-1deg); 
+            transform: translateY(-130px); /* Pops up into the center */
             opacity: 1;
             z-index: 100;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
         }
 
-        #typewriter { 
-            font-size: 1.55em; 
-            color: #d81b60; 
-            line-height: 1.4; 
-            font-weight: bold;
+        #typewriter {
+            font-size: 1.3em;
+            color: #4a4a4a;
             text-align: center;
-            text-shadow: 0.5px 0.5px 0px rgba(216, 27, 96, 0.2);
+            line-height: 1.4;
+            font-weight: bold;
         }
-        
-        .floating-item { position: absolute; top: -10%; font-size: 20px; animation: fall linear forwards; pointer-events: none; z-index: 150; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
-        .instruction { position: absolute; bottom: 8%; color: #d81b60; font-size: 1.5em; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 50% { transform: scale(1.1); } }
+
+        .floating-heart {
+            position: absolute;
+            color: #d81b60;
+            font-size: 15px;
+            animation: floatUp 4s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="instruction" id="clickText">Click to open...</div>
-
     <div class="envelope-wrapper" onclick="openEnvelope()">
         <div class="wing wing-left"></div>
         <div class="wing wing-right"></div>
+        
         <div class="envelope">
             <div class="card">
                 <div class="card-inner">
                     <div id="typewriter"></div>
-                    <div style="font-size: 30px; margin-top: 10px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));">❤️</div>
+                    <div style="color: #e91e63; font-size: 25px; margin-top: 10px;">❤️</div>
                 </div>
             </div>
         </div>
@@ -168,34 +169,35 @@
 
     <script>
         const message = "YES! I would love to be your Sahelii Moti. You are the best!";
-        let i = 0; let isOpened = false;
+        let i = 0;
+        let isOpened = false;
 
         function openEnvelope() {
             if (isOpened) return;
             isOpened = true;
             document.querySelector('.envelope-wrapper').classList.add('open');
-            document.getElementById('clickText').style.display = 'none';
+            
             setTimeout(typeWriter, 1000);
-            setInterval(createFloatingItems, 300);
+            setInterval(createHeart, 500);
         }
 
         function typeWriter() {
             if (i < message.length) {
                 document.getElementById("typewriter").innerHTML += message.charAt(i);
                 i++;
-                setTimeout(typeWriter, 75);
+                setTimeout(typeWriter, 70);
             }
         }
 
-        function createFloatingItems() {
-            const item = document.createElement('div');
-            item.classList.add('floating-item');
-            const types = ['❤️', '✨', '🌸']; 
-            item.innerHTML = types[Math.floor(Math.random() * types.length)];
-            item.style.left = Math.random() * 100 + 'vw';
-            item.style.animationDuration = Math.random() * 3 + 4 + 's';
-            document.body.appendChild(item);
-            setTimeout(() => { item.remove(); }, 7000);
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '100vh';
+            heart.style.fontSize = (Math.random() * 10 + 10) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
         }
     </script>
 </body>
